@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "Poll" (
     "id" SERIAL NOT NULL,
-    "hex" TEXT NOT NULL,
+    "hex" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
 
     CONSTRAINT "Poll_pkey" PRIMARY KEY ("id")

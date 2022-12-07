@@ -12,7 +12,7 @@ datasource db {
 
 model Poll {
   id    Int     @id @default(autoincrement())
-  hex String  @unique
+  hex Int  @unique
   description String
 }
 
