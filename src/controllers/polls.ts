@@ -32,7 +32,9 @@ export const createPoll = async (
   const { description = "", hex } = req.body;
 
   try {
-    const pollExists = await prismaClient.poll.findUnique({ where: { hex } });
+    const pollExists = await prismaClient.poll.findUnique({
+      where: { hex: Number(hex) },
+    });
 
     if (pollExists) {
       res.statusCode = 409;
@@ -41,7 +43,7 @@ export const createPoll = async (
 
     const result = await prismaClient.poll.create({
       data: {
-        hex,
+        hex: Number(hex),
         description,
       },
     });
@@ -50,4 +52,12 @@ export const createPoll = async (
   } catch (err) {
     res.send(err.message);
   }
+};
+
+/**
+ * @route POST /
+ */
+export const createPollFromWebhook = async (req: Request, res: Response) => {
+  try {
+  } catch (err) {}
 };
