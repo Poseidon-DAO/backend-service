@@ -1,5 +1,4 @@
-import { NextFunction } from "express";
-import { Request, Response } from "express-serve-static-core";
+import { NextFunction, Request, Response } from "express";
 
 import * as crypto from "crypto";
 import { IncomingMessage, ServerResponse } from "http";
@@ -41,7 +40,7 @@ export function addAlchemyContextToRequest(
 ): void {
   const signature = req.headers["x-alchemy-signature"];
   // Signature must be validated against the raw string
-  var body = buf.toString(encoding || "utf8");
+  const body = buf.toString(encoding || "utf8");
   (req as AlchemyRequest).alchemy = {
     rawBody: body,
     signature: signature as string,

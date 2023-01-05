@@ -15,11 +15,21 @@ export const getPolls = async (
 
   let start = PAGE_SIZE * (page - 1);
 
-  const polls = await prismaClient.poll.findMany({
-    skip: start,
-    take: PAGE_SIZE,
-  });
-  return res.json(polls);
+  try {
+    const polls = await prismaClient.poll.findMany({
+      skip: start,
+      take: PAGE_SIZE,
+    });
+
+    if (!polls && !polls.length) {
+      res.statusCode = 404;
+      throw new Error("No data available!");
+    }
+
+    return res.json(polls);
+  } catch (err) {
+    res.send(err.message);
+  }
 };
 
 /**

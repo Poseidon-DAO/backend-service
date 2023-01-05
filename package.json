@@ -7,8 +7,8 @@
   "license": "MIT",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/server.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\"",
+    "start": "node dist/src/server.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server.js\"",
     "seed-polls": "npx prisma db seed"
   },
   "prisma": {
