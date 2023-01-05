@@ -11,9 +11,6 @@
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server.js\"",
     "seed-polls": "npx prisma db seed"
   },
-  "prisma": {
-    "seed": "ts-node prisma/polls-seed.ts"
-  },
   "dependencies": {
     "@prisma/client": "4.7.1",
     "body-parser": "^1.20.1",
