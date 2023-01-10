@@ -16,6 +16,23 @@ model Poll {
   description String
 }
 
+model Block {
+  id    Int     @id @default(1)
+  blockNo String @unique @default("")
+}
+
+model Transaction {
+  address  String 
+  topics String []
+  data String
+  blockNumber String
+  transactionHash String
+  transactionIndex String
+  blockHash String
+  logIndex String @unique
+  removed Boolean
+}
+
 
 
 

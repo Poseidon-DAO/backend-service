@@ -13,6 +13,7 @@
       "@constants/*": ["constants/*"],
       "@controllers/*": ["controllers/*"],
       "@services/*": ["services/*"],
+      "@tasks/*": ["tasks/*"],
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"]
     },
