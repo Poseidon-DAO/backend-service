@@ -1,15 +1,13 @@
 {
   "name": "admin-backend-service",
   "version": "1.0.0",
-  "main": "index.js",
   "repository": "git@github.com:Poseidon-DAO/admin-backend-service.git",
   "author": "viganzeqiri <viganzeqirii@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/src/server.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/server.js\"",
-    "seed-polls": "npx prisma db seed"
+    "dev": "ts-node-dev -r tsconfig-paths/register src/server.ts",
+    "start": "ts-node -r tsconfig-paths/register dist/server.js"
   },
   "dependencies": {
     "@prisma/client": "4.7.1",
@@ -25,6 +23,8 @@
     "nodemon": "^2.0.20",
     "prisma": "^4.7.1",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "^4.9.3"
   }
 }

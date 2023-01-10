@@ -9,7 +9,15 @@
     "sourceMap": true,
     "outDir": "dist",
     "baseUrl": "src",
+    "paths": {
+      "@constants/*": ["constants/*"],
+      "@controllers/*": ["controllers/*"],
+      "@services/*": ["services/*"],
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"]
+    },
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["dist/**/*"]
 }

@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
+import { PAGE_SIZE } from "@constants/polls";
 
 import { prismaClient } from "../db-client";
-
-const PAGE_SIZE = 20;
 
 /**
  * @route GET /
