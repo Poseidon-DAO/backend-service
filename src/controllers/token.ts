@@ -1,19 +1,34 @@
 import { Request, Response } from "express";
+import { subDays } from "date-fns";
+import { groupedTransactionsByDiffInDays } from "@utils/token";
+
 import { prismaClient } from "../db-client";
 
 /**
  * @route GET /
  */
-export const getWeeklyMoved = async (req: Request, res: Response) => {
+export const getWeeklyTransfers = async (_: Request, res: Response) => {
   try {
-    const polls = await prismaClient.transaction.findMany();
+    const transfers = await prismaClient.transfer.findMany({
+      where: {
+        blockDate: {
+          lte: new Date().toISOString(),
+          gte: subDays(new Date(), 6).toISOString(),
+        },
+      },
+    });
 
-    if (!polls && !polls.length) {
+    const { grouped, sum } = groupedTransactionsByDiffInDays(transfers);
+
+    if (!transfers && !transfers.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
-    return res.json(polls);
+    return res.json({
+      totalSumMoved: sum,
+      groupedTransfersByDiffInDays: grouped,
+    });
   } catch (err) {
     res.send(err.message);
   }
@@ -22,30 +37,28 @@ export const getWeeklyMoved = async (req: Request, res: Response) => {
 /**
  * @route GET /
  */
-export const getWeeklyBurned = async (
-  req: Request<{}, {}, { hex: string; description: string }>,
-  res: Response
-) => {
-  const { description = "", hex } = req.body;
-
+export const getWeeklyBurned = async (_: Request, res: Response) => {
   try {
-    const pollExists = await prismaClient.poll.findUnique({
-      where: { hex: Number(hex) },
-    });
-
-    if (pollExists) {
-      res.statusCode = 409;
-      throw new Error("Poll exists!");
-    }
-
-    const result = await prismaClient.poll.create({
-      data: {
-        hex: Number(hex),
-        description,
+    const burns = await prismaClient.burn.findMany({
+      where: {
+        blockDate: {
+          lte: new Date().toISOString(),
+          gte: subDays(new Date(), 6).toISOString(),
+        },
       },
     });
 
-    res.json(result);
+    const { grouped, sum } = groupedTransactionsByDiffInDays(burns);
+
+    if (!burns && !burns.length) {
+      res.statusCode = 404;
+      throw new Error("No data available!");
+    }
+
+    return res.json({
+      totalSumBurned: sum,
+      groupedBurnsByDiffInDays: grouped,
+    });
   } catch (err) {
     res.send(err.message);
   }

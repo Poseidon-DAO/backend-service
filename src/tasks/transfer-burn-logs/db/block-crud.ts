@@ -14,7 +14,7 @@ export async function createBlockOnDatabase(blockNumberOnChain: string) {
   console.log("CREATING BLOCK NUMBER ON DATABASE START...");
 
   await prismaClient.block.create({
-    data: { blockNo: blockNumberOnChain },
+    data: { blockNo: `0x${(Number(blockNumberOnChain) + 1).toString(16)}` },
   });
 
   console.log("CREATING BLOCK NUMBER ON DATABASE END...");
@@ -27,7 +27,7 @@ export async function updateBlockOnDatabase(
   console.log("UPDATING BLOCK NUMBER ON DATABASE START...");
 
   await prismaClient.block.update({
-    data: { blockNo: blockNumberOnChain },
+    data: { blockNo: `0x${(Number(blockNumberOnChain) + 1).toString(16)}` },
     where: { id },
   });
 

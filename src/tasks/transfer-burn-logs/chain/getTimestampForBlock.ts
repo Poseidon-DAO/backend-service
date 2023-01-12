@@ -23,10 +23,12 @@ export async function getTimeStampForBlock(
   const blockInfoJsonResponse = await blockInfoResponse.json();
   const blockInfoOnChain = blockInfoJsonResponse?.result;
 
-  console.log("FETCHING BLOCK INFORMATION FROM CHAIN END...");
+  console.log(
+    `FETCHING BLOCK ${blockNumberOnChain} INFORMATION FROM CHAIN END...`
+  );
 
   return {
-    timestamp: Number(blockInfoOnChain.timestamp),
+    timestamp: `${Number(blockInfoOnChain.timestamp) * 1000}`,
     logIndex,
   };
 }

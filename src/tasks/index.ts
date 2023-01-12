@@ -1,9 +1,9 @@
-import getTransactionLogs from "./transaction-logs";
+import getTransfersLogs from "./transfer-burn-logs";
 
 export function startScheduledTasks() {
-  getTransactionLogs.start();
+  getTransfersLogs.start();
 }
 
 export function stopScheduledTasks() {
-  getTransactionLogs.stop();
+  getTransfersLogs.stop();
 }

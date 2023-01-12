@@ -1,7 +1,7 @@
 import url from "@constants/alchemy-url";
 import fetch from "cross-fetch";
 
-export async function getMostRecentBlockNo() {
+export async function getBlockOnChain() {
   console.log("FETCHING BLOCK NUMBER FROM CHAIN START...");
 
   const blockNoResponse = await fetch(url, {
