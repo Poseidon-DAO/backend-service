@@ -1,24 +1,12 @@
 import { Request, Response } from "express";
-import { PAGE_SIZE } from "@constants/polls";
-
 import { prismaClient } from "../db-client";
 
 /**
  * @route GET /
  */
-export const getPolls = async (
-  req: Request<{ page: number }>,
-  res: Response
-) => {
-  const { page = 1 } = req.params;
-
-  let start = PAGE_SIZE * (page - 1);
-
+export const getWeeklyMoved = async (req: Request, res: Response) => {
   try {
-    const polls = await prismaClient.poll.findMany({
-      skip: start,
-      take: PAGE_SIZE,
-    });
+    const polls = await prismaClient.transaction.findMany();
 
     if (!polls && !polls.length) {
       res.statusCode = 404;
@@ -32,9 +20,9 @@ export const getPolls = async (
 };
 
 /**
- * @route POST /
+ * @route GET /
  */
-export const createPoll = async (
+export const getWeeklyBurned = async (
   req: Request<{}, {}, { hex: string; description: string }>,
   res: Response
 ) => {

@@ -1,9 +1,9 @@
-import { fetchLogs } from "./fetchLogs";
+import getTransactionLogs from "./transaction-logs";
 
 export function startScheduledTasks() {
-  fetchLogs.start();
+  getTransactionLogs.start();
 }
 
 export function stopScheduledTasks() {
-  fetchLogs.stop();
+  getTransactionLogs.stop();
 }

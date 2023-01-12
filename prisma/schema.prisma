@@ -11,18 +11,18 @@ datasource db {
 }
 
 model Poll {
-  id    Int     @id @default(autoincrement())
+  id  Int  @id @default(autoincrement())
   hex Int  @unique
   description String
 }
 
 model Block {
-  id    Int     @id @default(1)
+  id  Int  @id @default(1)
   blockNo String @unique @default("")
 }
 
 model Transaction {
-  address  String 
+  address String 
   topics String []
   data String
   blockNumber String
@@ -31,6 +31,7 @@ model Transaction {
   blockHash String
   logIndex String @unique
   removed Boolean
+  timestamp Int?
 }
 
 

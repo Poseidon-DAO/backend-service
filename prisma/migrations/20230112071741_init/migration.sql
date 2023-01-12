@@ -25,7 +25,8 @@ CREATE TABLE "Transaction" (
     "transactionIndex" TEXT NOT NULL,
     "blockHash" TEXT NOT NULL,
     "logIndex" TEXT NOT NULL,
-    "removed" BOOLEAN NOT NULL
+    "removed" BOOLEAN NOT NULL,
+    "timestamp" INTEGER
 );
 
 -- CreateIndex
