@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import bodyParser from "body-parser";
 
 import * as tokenController from "@controllers/token";
-// import * as pollsController from "@controllers/polls";
+import * as nftController from "@controllers/nft";
 
 import { startScheduledTasks } from "@tasks/index";
 
@@ -18,7 +18,7 @@ app.set("port", process.env.PORT || 3000);
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
 app.get("/token/weeklyBurned", tokenController.getWeeklyBurned);
 
-// app.get("/polls", pollsController.getPolls);
-// app.post("/polls", pollsController.createPoll);
+app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
+app.get("/nft/total", nftController.totalNfts);
 
 export default app;

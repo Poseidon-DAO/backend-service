@@ -1,16 +1,16 @@
 import { prismaClient } from "db-client";
 
-export async function getBlockOnDatabase() {
-  console.log("FETCHING BLOCK NUMBER FROM DATABASE START...");
+export async function getBlockNoOnDatabase() {
+  console.log("READING BLOCK NUMBER FROM DATABASE START...");
 
   const blockNumberOnDatabase = await prismaClient.block.findFirst();
 
-  console.log("FETCHING BLOCK NUMBER FROM DATABASE END...");
+  console.log("READING BLOCK NUMBER FROM DATABASE END...");
 
   return blockNumberOnDatabase;
 }
 
-export async function createBlockOnDatabase(blockNumberOnChain: string) {
+export async function createBlockNoOnDatabase(blockNumberOnChain: string) {
   console.log("CREATING BLOCK NUMBER ON DATABASE START...");
 
   await prismaClient.block.create({
@@ -20,7 +20,7 @@ export async function createBlockOnDatabase(blockNumberOnChain: string) {
   console.log("CREATING BLOCK NUMBER ON DATABASE END...");
 }
 
-export async function updateBlockOnDatabase(
+export async function updateBlockNoOnDatabase(
   id: number,
   blockNumberOnChain: string
 ) {

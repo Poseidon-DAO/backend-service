@@ -7,20 +7,11 @@ import { prismaClient } from "../db-client";
 /**
  * @route GET /
  */
-export const getWeeklyTransfers = async (_: Request, res: Response) => {
+export const getWeeklyMinted = async (_: Request, res: Response) => {
   try {
     const transfers = await prismaClient.transferEventLog.findMany({
       where: {
-        NOT: {
-          OR: [
-            {
-              functionName: { equals: "burn" },
-            },
-            {
-              functionName: { equals: "burnAndReceiveNFT" },
-            },
-          ],
-        },
+        functionName: { equals: "burnAndReceiveNFT" },
         blockDate: {
           lte: new Date().toISOString(),
           gte: subDays(new Date(), 6).toISOString(),
@@ -47,7 +38,7 @@ export const getWeeklyTransfers = async (_: Request, res: Response) => {
 /**
  * @route GET /
  */
-export const getWeeklyBurned = async (_: Request, res: Response) => {
+export const totalNfts = async (_: Request, res: Response) => {
   try {
     const burns = await prismaClient.transferEventLog.findMany({
       where: {

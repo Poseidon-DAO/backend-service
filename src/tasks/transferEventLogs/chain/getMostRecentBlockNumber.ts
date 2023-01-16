@@ -1,8 +1,8 @@
 import url from "@constants/alchemy-url";
 import fetch from "cross-fetch";
 
-export async function getBlockOnChain() {
-  console.log("FETCHING BLOCK NUMBER FROM CHAIN START...");
+export async function getBlockNoOnChain() {
+  console.log("READING BLOCK NUMBER FROM CHAIN START...");
 
   const blockNoResponse = await fetch(url, {
     method: "POST",
@@ -19,7 +19,7 @@ export async function getBlockOnChain() {
   const blockNumberJsonResponse = await blockNoResponse.json();
   const blockNumberOnChain = blockNumberJsonResponse?.result;
 
-  console.log("FETCHING BLOCK NUMBER FROM CHAIN END...");
+  console.log("READING BLOCK NUMBER FROM CHAIN END...");
 
   return blockNumberOnChain;
 }

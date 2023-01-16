@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
 import { PAGE_SIZE } from "@constants/polls";
 
 import { prismaClient } from "../db-client";

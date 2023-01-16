@@ -16,7 +16,7 @@ CREATE TABLE "Block" (
 );
 
 -- CreateTable
-CREATE TABLE "Transfer" (
+CREATE TABLE "TransferEventLog" (
     "address" TEXT NOT NULL,
     "topics" TEXT[],
     "data" TEXT NOT NULL,
@@ -27,22 +27,8 @@ CREATE TABLE "Transfer" (
     "logIndex" TEXT NOT NULL,
     "removed" BOOLEAN NOT NULL,
     "blockDate" TIMESTAMPTZ(3),
-    "timestamp" TEXT
-);
-
--- CreateTable
-CREATE TABLE "Burn" (
-    "address" TEXT NOT NULL,
-    "topics" TEXT[],
-    "data" TEXT NOT NULL,
-    "blockNumber" TEXT NOT NULL,
-    "transactionHash" TEXT NOT NULL,
-    "transactionIndex" TEXT NOT NULL,
-    "blockHash" TEXT NOT NULL,
-    "logIndex" TEXT NOT NULL,
-    "removed" BOOLEAN NOT NULL,
-    "blockDate" TIMESTAMPTZ(3),
-    "timestamp" TEXT
+    "timestamp" TEXT,
+    "functionName" TEXT
 );
 
 -- CreateIndex
@@ -52,7 +38,4 @@ CREATE UNIQUE INDEX "Poll_hex_key" ON "Poll"("hex");
 CREATE UNIQUE INDEX "Block_blockNo_key" ON "Block"("blockNo");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Transfer_logIndex_key" ON "Transfer"("logIndex");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Burn_logIndex_key" ON "Burn"("logIndex");
+CREATE UNIQUE INDEX "TransferEventLog_logIndex_key" ON "TransferEventLog"("logIndex");

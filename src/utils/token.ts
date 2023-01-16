@@ -1,25 +1,39 @@
-import { type Transfer, type Burn } from "@prisma/client";
+import { type TransferEventLog } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 import { ethers } from "ethers";
 
-export function groupedTransactionsByDiffInDays(data: (Burn | Transfer)[]) {
+export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
   let sum = 0;
 
-  const grouped = data.reduce<Record<number, (Burn | Transfer)[]>>(
-    (groupedTransfers, currTransfer) => {
+  const groupedLogs = logs.reduce<Record<number, TransferEventLog[]>>(
+    (allGroupedLogs, currTransfer) => {
       const dayIndex = differenceInDays(new Date(), currTransfer.blockDate);
+
       sum += Number(ethers.utils.formatEther(currTransfer.data));
 
+      const indexMap: Record<number, number> = {
+        0: 7,
+        1: 6,
+        2: 5,
+        3: 4,
+        4: 3,
+        5: 2,
+        6: 1,
+      };
+
       return {
-        ...groupedTransfers,
-        [dayIndex]: [...(groupedTransfers[dayIndex] || []), currTransfer],
+        ...allGroupedLogs,
+        [indexMap[dayIndex]]: [
+          ...(allGroupedLogs[indexMap[dayIndex]] || []),
+          currTransfer,
+        ],
       };
     },
-    {}
+    { 1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [] }
   );
 
   return {
-    grouped,
+    groupedLogs,
     sum,
   };
 }

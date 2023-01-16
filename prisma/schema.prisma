@@ -21,7 +21,7 @@ model Block {
   blockNo String @unique @default("")
 }
 
-model Transfer {
+model TransferEventLog {
   address String 
   topics String []
   data String
@@ -33,21 +33,10 @@ model Transfer {
   removed Boolean
   blockDate DateTime? @db.Timestamptz(3)
   timestamp String? 
+  functionName String?
 }
 
-model Burn {
-  address String 
-  topics String []
-  data String
-  blockNumber String
-  transactionHash String
-  transactionIndex String
-  blockHash String
-  logIndex String @unique
-  removed Boolean
-  blockDate DateTime? @db.Timestamptz(3)
-  timestamp String? 
-}
+
 
 
 

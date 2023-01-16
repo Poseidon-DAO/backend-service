@@ -1,11 +1,12 @@
-import url from "@constants/alchemy-url";
+import { type TransferEventLog } from "@prisma/client";
 import fetch from "cross-fetch";
 
-export async function getTimeStampForBlock(
-  blockNumberOnChain: string,
-  logIndex: string
-) {
-  console.log("FETCHING BLOCK INFORMATION FROM CHAIN START...");
+import url from "@constants/alchemy-url";
+
+export async function getTimeStampForBlock(log: TransferEventLog) {
+  console.log(
+    `READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN START...`
+  );
 
   const blockInfoResponse = await fetch(url, {
     method: "POST",
@@ -17,18 +18,16 @@ export async function getTimeStampForBlock(
       id: 1,
       jsonrpc: "2.0",
       method: "eth_getBlockByNumber",
-      params: [blockNumberOnChain, false],
+      params: [log.blockNumber, false],
     }),
   });
   const blockInfoJsonResponse = await blockInfoResponse.json();
   const blockInfoOnChain = blockInfoJsonResponse?.result;
 
-  console.log(
-    `FETCHING BLOCK ${blockNumberOnChain} INFORMATION FROM CHAIN END...`
-  );
+  console.log(`READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN END...`);
 
   return {
     timestamp: `${Number(blockInfoOnChain.timestamp) * 1000}`,
-    logIndex,
+    ...log,
   };
 }
