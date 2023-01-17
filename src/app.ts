@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 import * as tokenController from "@controllers/token";
 import * as nftController from "@controllers/nft";
@@ -13,6 +14,7 @@ const app: Express = express();
 startScheduledTasks();
 
 app.use(bodyParser.json());
+app.use(cors());
 app.set("port", process.env.PORT || 3000);
 
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
