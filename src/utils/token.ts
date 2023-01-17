@@ -1,5 +1,5 @@
 import { type TransferEventLog } from "@prisma/client";
-import { differenceInDays } from "date-fns";
+import { differenceInCalendarDays } from "date-fns";
 import { ethers } from "ethers";
 
 export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
@@ -7,7 +7,10 @@ export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
 
   const groupedLogs = logs.reduce<Record<number, TransferEventLog[]>>(
     (allGroupedLogs, currTransfer) => {
-      const dayIndex = differenceInDays(new Date(), currTransfer.blockDate);
+      const dayIndex = differenceInCalendarDays(
+        new Date(),
+        currTransfer.blockDate
+      );
 
       sum += Number(ethers.utils.formatEther(currTransfer.data));
 

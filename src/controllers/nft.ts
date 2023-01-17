@@ -27,8 +27,8 @@ export const getWeeklyMinted = async (_: Request, res: Response) => {
     }
 
     return res.json({
-      totalSumMoved: sum,
-      weeklyTransfers: groupedLogs,
+      totalSumMint: sum,
+      weeklyMints: groupedLogs,
     });
   } catch (err) {
     res.send(err.message);
