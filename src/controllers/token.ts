@@ -84,3 +84,23 @@ export const getWeeklyBurned = async (_: Request, res: Response) => {
     res.send(err.message);
   }
 };
+
+/**
+ * @route GET /
+ */
+export const getAirdrops = async (_: Request, res: Response) => {
+  try {
+    const airdrops = await prismaClient.transferEventLog.findMany({
+      where: { functionName: { equals: "runAirdrop" } },
+    });
+
+    if (!airdrops && !airdrops.length) {
+      res.statusCode = 404;
+      throw new Error("No data available!");
+    }
+
+    return res.json({ airdrops });
+  } catch (err) {
+    res.send(err.message);
+  }
+};
