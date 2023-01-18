@@ -1,6 +1,9 @@
 import { type Request, type Response } from "express";
 import { subDays } from "date-fns";
-import { groupWeeklyTransferEventLogs } from "@utils/token";
+import { ethers } from "ethers";
+
+import { groupWeeklyMintedNFTLogs } from "@utils/nft";
+import { getRatio } from "@chain/getRatio";
 
 import { prismaClient } from "../db-client";
 
@@ -9,7 +12,7 @@ import { prismaClient } from "../db-client";
  */
 export const getWeeklyMinted = async (_: Request, res: Response) => {
   try {
-    const transfers = await prismaClient.transferEventLog.findMany({
+    const mints = await prismaClient.transferEventLog.findMany({
       where: {
         functionName: { equals: "burnAndReceiveNFT" },
         blockDate: {
@@ -19,9 +22,11 @@ export const getWeeklyMinted = async (_: Request, res: Response) => {
       },
     });
 
-    const { groupedLogs, sum } = groupWeeklyTransferEventLogs(transfers);
+    const ratio = await getRatio();
 
-    if (!transfers && !transfers.length) {
+    const { groupedLogs, sum } = groupWeeklyMintedNFTLogs(mints, Number(ratio));
+
+    if (!mints && !mints.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
@@ -40,33 +45,25 @@ export const getWeeklyMinted = async (_: Request, res: Response) => {
  */
 export const totalNfts = async (_: Request, res: Response) => {
   try {
-    const burns = await prismaClient.transferEventLog.findMany({
+    const nfts = await prismaClient.transferEventLog.findMany({
       where: {
-        OR: [
-          {
-            functionName: { equals: "burn" },
-          },
-          {
-            functionName: { equals: "burnAndReceiveNFT" },
-          },
-        ],
-        blockDate: {
-          lte: new Date().toISOString(),
-          gte: subDays(new Date(), 6).toISOString(),
-        },
+        functionName: { equals: "burnAndReceiveNFT" },
       },
     });
 
-    const { groupedLogs, sum } = groupWeeklyTransferEventLogs(burns);
+    const ratio = await getRatio();
 
-    if (!burns && !burns.length) {
+    const countGNfts = nfts.reduce((acc, item) => {
+      return (acc += Number(ethers.utils.formatEther(item.data)) / ratio);
+    }, 0);
+
+    if (!nfts && !nfts.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
     return res.json({
-      totalSumBurned: sum,
-      weeklyBurns: groupedLogs,
+      totalNfts: countGNfts,
     });
   } catch (err) {
     res.send(err.message);

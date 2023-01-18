@@ -1,14 +1,28 @@
 import { type TransferEventLog } from "@prisma/client";
 
 import { prismaClient } from "db-client";
+import { ethers } from "ethers";
 
 export async function createTransferEventLogsOnDatabase(
   transferEventLogs: TransferEventLog[]
 ) {
   console.log("CREATING TRANSFER EVENT LOGS ON DATABASE START...");
 
+  const updatedDataForBurnGNft = transferEventLogs.map((transferEventLog) => {
+    if (transferEventLog.functionName === "burnAndReceiveNFT") {
+      return {
+        ...transferEventLog,
+        data: ethers.utils
+          .parseUnits(Number(transferEventLog.data).toString(), 18)
+          .toString(),
+      };
+    }
+
+    return transferEventLog;
+  });
+
   await prismaClient.transferEventLog.createMany({
-    data: transferEventLogs,
+    data: updatedDataForBurnGNft,
   });
 
   console.log("CREATING TRANSFER EVENT LOGS ON DATABASE END...");

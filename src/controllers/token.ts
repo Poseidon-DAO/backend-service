@@ -19,6 +19,9 @@ export const getWeeklyTransfers = async (_: Request, res: Response) => {
             {
               functionName: { equals: "burnAndReceiveNFT" },
             },
+            {
+              functionName: { equals: "initialize" },
+            },
           ],
         },
         blockDate: {

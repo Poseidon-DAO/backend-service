@@ -10,6 +10,7 @@
     "outDir": "dist",
     "baseUrl": "src",
     "paths": {
+      "@chain/*": ["chain/*"],
       "@constants/*": ["constants/*"],
       "@contracts/*": ["contracts/*"],
       "@controllers/*": ["controllers/*"],
