@@ -1,6 +1,5 @@
 import { type TransferEventLog } from "@prisma/client";
 import { differenceInCalendarDays } from "date-fns";
-import { ethers } from "ethers";
 
 export function groupWeeklyMintedNFTLogs(
   logs: TransferEventLog[],
@@ -17,7 +16,7 @@ export function groupWeeklyMintedNFTLogs(
         currTransfer.blockDate
       );
 
-      let gNft = Number(ethers.utils.formatEther(currTransfer.data)) / ratio;
+      let gNft = Number(currTransfer.data) / ratio;
 
       sum += gNft;
 

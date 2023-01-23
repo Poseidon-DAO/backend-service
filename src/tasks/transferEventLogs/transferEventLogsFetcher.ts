@@ -5,10 +5,7 @@ import {
   getBlockNoOnDatabase,
   updateBlockNoOnDatabase,
 } from "./db/block.crud";
-import {
-  createTransferEventLogsOnDatabase,
-  updateTransferEventLogsTimestampsOnDatabase,
-} from "./db/transferEventLog.crud";
+import { createTransferEventLogsOnDatabase } from "./db/transferEventLog.crud";
 
 import { getBlockNoOnChain } from "./chain/getMostRecentBlockNumber";
 import { getTransferEventLogs } from "./chain/getTransferEventLogs";
@@ -33,16 +30,13 @@ async function transferEventLogsFetcher() {
     }
 
     if (!!transferEventLogs?.length) {
-      await createTransferEventLogsOnDatabase(transferEventLogs);
-
       const transferEventLogsWithTimestamps = await Promise.all(
         transferEventLogs?.map((log: TransferEventLog) =>
           getTimeStampForBlock(log)
         )
       );
-      await updateTransferEventLogsTimestampsOnDatabase(
-        transferEventLogsWithTimestamps
-      );
+
+      await createTransferEventLogsOnDatabase(transferEventLogsWithTimestamps);
     }
 
     console.log("READING TRANSFER EVENT LOGS END...");

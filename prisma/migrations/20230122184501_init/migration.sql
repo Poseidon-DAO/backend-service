@@ -17,6 +17,7 @@ CREATE TABLE "Block" (
 
 -- CreateTable
 CREATE TABLE "TransferEventLog" (
+    "id" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "topics" TEXT[],
     "data" TEXT NOT NULL,
@@ -26,9 +27,11 @@ CREATE TABLE "TransferEventLog" (
     "blockHash" TEXT NOT NULL,
     "logIndex" TEXT NOT NULL,
     "removed" BOOLEAN NOT NULL,
-    "blockDate" TIMESTAMPTZ(3),
-    "timestamp" TEXT,
-    "functionName" TEXT
+    "blockDate" TIMESTAMPTZ(3) NOT NULL,
+    "timestamp" TEXT NOT NULL,
+    "functionName" TEXT,
+
+    CONSTRAINT "TransferEventLog_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -38,4 +41,4 @@ CREATE UNIQUE INDEX "Poll_hex_key" ON "Poll"("hex");
 CREATE UNIQUE INDEX "Block_blockNo_key" ON "Block"("blockNo");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "TransferEventLog_logIndex_key" ON "TransferEventLog"("logIndex");
+CREATE UNIQUE INDEX "TransferEventLog_id_key" ON "TransferEventLog"("id");

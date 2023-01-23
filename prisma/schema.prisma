@@ -22,6 +22,7 @@ model Block {
 }
 
 model TransferEventLog {
+  id String @unique @id @default(uuid())
   address String 
   topics String []
   data String
@@ -29,10 +30,10 @@ model TransferEventLog {
   transactionHash String
   transactionIndex String
   blockHash String
-  logIndex String @unique
+  logIndex String 
   removed Boolean
-  blockDate DateTime? @db.Timestamptz(3)
-  timestamp String? 
+  blockDate DateTime @db.Timestamptz(3)
+  timestamp String 
   functionName String?
 }
 

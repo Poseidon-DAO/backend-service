@@ -12,7 +12,10 @@ export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
         currTransfer.blockDate
       );
 
-      sum += Number(ethers.utils.formatEther(currTransfer.data));
+      sum +=
+        currTransfer.functionName === "burnAndReceiveNFT"
+          ? Number(currTransfer.data)
+          : Number(ethers.utils.formatEther(currTransfer.data));
 
       const indexMap: Record<number, number> = {
         0: 7,

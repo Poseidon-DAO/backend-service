@@ -1,6 +1,5 @@
 import { type Request, type Response } from "express";
 import { subDays } from "date-fns";
-import { ethers } from "ethers";
 
 import { groupWeeklyMintedNFTLogs } from "@utils/nft";
 import { getRatio } from "@chain/getRatio";
@@ -54,7 +53,7 @@ export const totalNfts = async (_: Request, res: Response) => {
     const ratio = await getRatio();
 
     const countGNfts = nfts.reduce((acc, item) => {
-      return (acc += Number(ethers.utils.formatEther(item.data)) / ratio);
+      return (acc += Number(item.data) / ratio);
     }, 0);
 
     if (!nfts && !nfts.length) {
