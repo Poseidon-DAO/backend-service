@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
+import { type Request, type Response } from "express";
+import { PAGE_SIZE } from "@constants/polls";
 
 import { prismaClient } from "../db-client";
-
-const PAGE_SIZE = 20;
 
 /**
  * @route GET /
@@ -15,11 +14,21 @@ export const getPolls = async (
 
   let start = PAGE_SIZE * (page - 1);
 
-  const polls = await prismaClient.poll.findMany({
-    skip: start,
-    take: PAGE_SIZE,
-  });
-  return res.json(polls);
+  try {
+    const polls = await prismaClient.poll.findMany({
+      skip: start,
+      take: PAGE_SIZE,
+    });
+
+    if (!polls && !polls.length) {
+      res.statusCode = 404;
+      throw new Error("No data available!");
+    }
+
+    return res.json(polls);
+  } catch (err) {
+    res.send(err.message);
+  }
 };
 
 /**
@@ -32,7 +41,9 @@ export const createPoll = async (
   const { description = "", hex } = req.body;
 
   try {
-    const pollExists = await prismaClient.poll.findUnique({ where: { hex } });
+    const pollExists = await prismaClient.poll.findUnique({
+      where: { hex: Number(hex) },
+    });
 
     if (pollExists) {
       res.statusCode = 409;
@@ -41,7 +52,7 @@ export const createPoll = async (
 
     const result = await prismaClient.poll.create({
       data: {
-        hex,
+        hex: Number(hex),
         description,
       },
     });
