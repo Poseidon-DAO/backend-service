@@ -1,13 +1,9 @@
 import { type TransferEventLog } from "@prisma/client";
 
-import {
-  createBlockNoOnDatabase,
-  getBlockNoOnDatabase,
-  updateBlockNoOnDatabase,
-} from "./db/block.crud";
-import { createTransferEventLogsOnDatabase } from "./db/transferEventLog.crud";
+import { createBlockNo, getBlockNo, updateBlockNo } from "./db/block.crud";
+import { createTransferEventLogs } from "./db/transferEventLog.crud";
 
-import { getBlockNoOnChain } from "./chain/getMostRecentBlockNumber";
+import { getMostRecentBlock } from "./chain/getMostRecentBlockNumber";
 import { getTransferEventLogs } from "./chain/getTransferEventLogs";
 import { getTimeStampForBlock } from "./chain/getTimestampForBlock";
 
@@ -15,8 +11,8 @@ async function transferEventLogsFetcher() {
   console.log("READING TRANSFER EVENT LOGS START...");
 
   try {
-    const blockNoOnDatabase = await getBlockNoOnDatabase();
-    const blockNoOnChain = await getBlockNoOnChain();
+    const blockNoOnDatabase = await getBlockNo();
+    const blockNoOnChain = await getMostRecentBlock();
 
     const transferEventLogs = await getTransferEventLogs(
       blockNoOnDatabase?.blockNo,
@@ -24,9 +20,9 @@ async function transferEventLogsFetcher() {
     );
 
     if (!blockNoOnDatabase) {
-      await createBlockNoOnDatabase(blockNoOnChain);
+      await createBlockNo(blockNoOnChain);
     } else {
-      await updateBlockNoOnDatabase(blockNoOnDatabase?.id, blockNoOnChain);
+      await updateBlockNo(blockNoOnDatabase?.id, blockNoOnChain);
     }
 
     if (!!transferEventLogs?.length) {
@@ -36,7 +32,7 @@ async function transferEventLogsFetcher() {
         )
       );
 
-      await createTransferEventLogsOnDatabase(transferEventLogsWithTimestamps);
+      await createTransferEventLogs(transferEventLogsWithTimestamps);
     }
 
     console.log("READING TRANSFER EVENT LOGS END...");

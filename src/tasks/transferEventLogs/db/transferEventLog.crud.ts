@@ -2,7 +2,7 @@ import { type TransferEventLog } from "@prisma/client";
 
 import { prismaClient } from "db-client";
 
-export async function createTransferEventLogsOnDatabase(
+export async function createTransferEventLogs(
   transferEventLogs: TransferEventLog[]
 ) {
   console.log("CREATING TRANSFER EVENT LOGS ON DATABASE START...");
