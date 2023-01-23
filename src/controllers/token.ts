@@ -1,6 +1,9 @@
 import { type Request, type Response } from "express";
 import { subDays } from "date-fns";
-import { groupWeeklyTransferEventLogs } from "@utils/token";
+import {
+  groupAirdropsByDate,
+  groupWeeklyTransferEventLogs,
+} from "@utils/token";
 
 import { prismaClient } from "../db-client";
 
@@ -94,12 +97,14 @@ export const getAirdrops = async (_: Request, res: Response) => {
       where: { functionName: { equals: "runAirdrop" } },
     });
 
+    const { groupedLogs } = groupAirdropsByDate(airdrops);
+
     if (!airdrops && !airdrops.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
-    return res.json({ airdrops });
+    return res.json({ airdrops: groupedLogs });
   } catch (err) {
     res.send(err.message);
   }

@@ -43,3 +43,22 @@ export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
     sum,
   };
 }
+
+export function groupAirdropsByDate(logs: TransferEventLog[]) {
+  const groupedLogs = logs.reduce<Record<string, TransferEventLog[]>>(
+    (allGroupedLogs, currTransfer) => {
+      return {
+        ...allGroupedLogs,
+        [currTransfer.timestamp]: [
+          ...(allGroupedLogs[currTransfer.timestamp] || []),
+          currTransfer,
+        ],
+      };
+    },
+    {}
+  );
+
+  return {
+    groupedLogs,
+  };
+}
