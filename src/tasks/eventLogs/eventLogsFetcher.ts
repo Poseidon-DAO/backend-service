@@ -1,14 +1,15 @@
-import { type TransferEventLog } from "@prisma/client";
+import { type EventLog } from "@prisma/client";
 
 import { createBlockNo, getBlockNo, updateBlockNo } from "./db/block.crud";
-import { createTransferEventLogs } from "./db/transferEventLog.crud";
+import { createEventLogs } from "./db/eventLog.crud";
 
 import { getMostRecentBlock } from "./chain/getMostRecentBlockNumber";
 import { getTransferEventLogs } from "./chain/getTransferEventLogs";
 import { getTimeStampForBlock } from "./chain/getTimestampForBlock";
+import { getAddVestEventLogs } from "./chain/getAddVestEventLogs";
 
-async function transferEventLogsFetcher() {
-  console.log("READING TRANSFER EVENT LOGS START...");
+async function eventLogsFetcher() {
+  console.log("READING EVENT LOGS START...");
 
   try {
     const blockNoOnDatabase = await getBlockNo();
@@ -19,27 +20,32 @@ async function transferEventLogsFetcher() {
       blockNoOnChain
     );
 
+    const addVestEventLogs = await getAddVestEventLogs(
+      blockNoOnDatabase?.blockNo,
+      blockNoOnChain
+    );
+
+    const combinedLogs = [...transferEventLogs, ...addVestEventLogs];
+
     if (!blockNoOnDatabase) {
       await createBlockNo(blockNoOnChain);
     } else {
       await updateBlockNo(blockNoOnDatabase?.id, blockNoOnChain);
     }
 
-    if (!!transferEventLogs?.length) {
-      const transferEventLogsWithTimestamps = await Promise.all(
-        transferEventLogs?.map((log: TransferEventLog) =>
-          getTimeStampForBlock(log)
-        )
+    if (!!combinedLogs?.length) {
+      const logsWithTimestamps = await Promise.all(
+        combinedLogs?.map((log: EventLog) => getTimeStampForBlock(log))
       );
 
-      await createTransferEventLogs(transferEventLogsWithTimestamps);
+      await createEventLogs(logsWithTimestamps);
     }
 
-    console.log("READING TRANSFER EVENT LOGS END...");
+    console.log("READING EVENT LOGS END...");
     console.log("===================================== ✅");
   } catch (error) {
     console.error(error);
   }
 }
 
-export { transferEventLogsFetcher };
+export { eventLogsFetcher };

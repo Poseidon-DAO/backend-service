@@ -1,18 +1,18 @@
-import { type TransferEventLog } from "@prisma/client";
+import { type EventLog } from "@prisma/client";
 import { utils } from "ethers";
 import fetch from "cross-fetch";
 
 import url from "@constants/alchemy-url";
 import ERC20Abi from "@contracts/ERC20Abi.json";
 
-import { TRANSFER_EVENT_SIGNITURE } from "../constants";
+import { ADD_VEST_EVENT_SIGNITURE } from "../constants";
 
 const ERC20Interface = new utils.Interface(ERC20Abi);
 
-export async function getTransferEventLogs(fromBlock: string, toBlock: string) {
-  console.log("READING TRANSFER EVENT LOGS FROM CHAIN START...");
+export async function getAddVestEventLogs(fromBlock: string, toBlock: string) {
+  console.log("READING ADD VEST EVENT LOGS FROM CHAIN START...");
 
-  const transferEventlogsResponse = await fetch(url, {
+  const addVestEventlogsResponse = await fetch(url, {
     method: "POST",
     headers: {
       accept: "application/json",
@@ -25,19 +25,19 @@ export async function getTransferEventLogs(fromBlock: string, toBlock: string) {
       params: [
         {
           address: process.env.SC_ERC20_ADDRESS,
-          topics: [TRANSFER_EVENT_SIGNITURE],
+          topics: [ADD_VEST_EVENT_SIGNITURE],
           fromBlock: !!fromBlock ? fromBlock : "earliest",
           toBlock: !!toBlock ? toBlock : "latest",
         },
       ],
     }),
   });
-  const transferEventlogsResponseJson = await transferEventlogsResponse.json();
-  const transferEventLogs = (transferEventlogsResponseJson.result ||
-    []) as TransferEventLog[];
+  const addVestEventlogsResponseJson = await addVestEventlogsResponse.json();
+  const addVestEventLogs = (addVestEventlogsResponseJson.result ||
+    []) as EventLog[];
 
-  const transferEventLogsWithFunctionNames = await Promise.all(
-    transferEventLogs?.map(async (log: TransferEventLog) => {
+  const addVestEventLogsWithFunctionNames = await Promise.all(
+    addVestEventLogs?.map(async (log: EventLog) => {
       console.log(
         `READING TRANSACTION BY HASH FOR LOG ${log.blockHash} FROM CHAIN START...`
       );
@@ -73,7 +73,7 @@ export async function getTransferEventLogs(fromBlock: string, toBlock: string) {
     })
   );
 
-  console.log("READING TRANSFER EVENT LOGS FROM CHAIN END...");
+  console.log("READING ADD VEST EVENT LOGS FROM CHAIN END...");
 
-  return transferEventLogsWithFunctionNames;
+  return addVestEventLogsWithFunctionNames;
 }

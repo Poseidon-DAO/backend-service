@@ -21,7 +21,7 @@ model Block {
   blockNo String @unique @default("")
 }
 
-model TransferEventLog {
+model EventLog {
   id String @unique @id @default(uuid())
   address String 
   topics String []

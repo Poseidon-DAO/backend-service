@@ -1,22 +1,16 @@
-import { type TransferEventLog } from "@prisma/client";
+import { type EventLog } from "@prisma/client";
 import { differenceInCalendarDays } from "date-fns";
 
-export function groupWeeklyMintedNFTLogs(
-  logs: TransferEventLog[],
-  ratio: number
-) {
+export function groupWeeklyMintedNFTLogs(logs: EventLog[], ratio: number) {
   let sum = 0;
 
   const groupedLogs = logs.reduce<
-    Record<number, (TransferEventLog & { gNft: number })[]>
+    Record<number, (EventLog & { gNft: number })[]>
   >(
-    (allGroupedLogs, currTransfer) => {
-      const dayIndex = differenceInCalendarDays(
-        new Date(),
-        currTransfer.blockDate
-      );
+    (allGroupedLogs, currLog) => {
+      const dayIndex = differenceInCalendarDays(new Date(), currLog.blockDate);
 
-      let gNft = Number(currTransfer.data) / ratio;
+      let gNft = Number(currLog.data) / ratio;
 
       sum += gNft;
 
@@ -34,7 +28,7 @@ export function groupWeeklyMintedNFTLogs(
         ...allGroupedLogs,
         [indexMap[dayIndex]]: [
           ...(allGroupedLogs[indexMap[dayIndex]] || []),
-          { ...currTransfer, gNft },
+          { ...currLog, gNft },
         ],
       };
     },

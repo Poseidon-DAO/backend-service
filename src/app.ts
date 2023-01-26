@@ -20,6 +20,7 @@ app.set("port", process.env.PORT || 3000);
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
 app.get("/token/weeklyBurned", tokenController.getWeeklyBurned);
 app.get("/token/airdropsByDate", tokenController.getAirdrops);
+app.get("/token/vestsByDate", tokenController.getVests);
 
 app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
 app.get("/nft/total", nftController.totalNfts);
