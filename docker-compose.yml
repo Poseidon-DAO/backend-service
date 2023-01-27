@@ -1,0 +1,73 @@
+version: "3.9"
+
+x-admin: &admin patrick.jusic@poseidondao.org
+
+x-pg-env: &pg-env
+  POSTGRES_USER: &pg-user test
+  POSTGRES_PASSWORD: &pg-pass test
+  POSTGRES_DB: &pg-db poseidondao
+
+x-network: &network
+  networks:
+    poseidondao:
+
+services:
+  admin-backend:
+    container_name: admin-backend
+    build:
+      context: .
+      dockerfile: ./dev.Dockerfile
+      # dockerfile: ./Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./config:/usr/src/app/config
+      - .:/usr/src/app
+      - ./data:/data
+    # depends_on:
+      # - postgres
+    <<: [*network]
+
+  postgres:
+    image: postgres:12
+    container_name: postgres-admin-backend
+    restart: always
+    environment:
+      <<: *pg-env
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/lib/postgresql/data
+    <<: *network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    ports:
+      - 9876:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: *admin
+      PGADMIN_DEFAULT_PASSWORD: *pg-pass
+    links:
+      - postgres
+    logging:
+      driver: none
+    <<: *network
+
+  redis:
+    image: redis:6.2.5
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - cache:/data
+    restart: always
+    <<: *network
+
+volumes:
+  data:
+  cache:
+
+networks:
+  poseidondao:
+    name: poseidondao
