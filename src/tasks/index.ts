@@ -1,4 +1,4 @@
-import getTransferEventLogs from "./transferEventLogs";
+import getTransferEventLogs from "./eventLogs";
 
 export function startScheduledTasks() {
   getTransferEventLogs.start();

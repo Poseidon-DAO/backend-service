@@ -1,9 +1,9 @@
-import { type TransferEventLog } from "@prisma/client";
+import { type EventLog } from "@prisma/client";
 import fetch from "cross-fetch";
 
 import url from "@constants/alchemy-url";
 
-export async function getTimeStampForBlock(log: TransferEventLog) {
+export async function getTimeStampForBlock(log: EventLog) {
   console.log(
     `READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN START...`
   );

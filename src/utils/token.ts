@@ -1,21 +1,18 @@
-import { type TransferEventLog } from "@prisma/client";
+import { type EventLog } from "@prisma/client";
 import { differenceInCalendarDays } from "date-fns";
 import { ethers } from "ethers";
 
-export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
+export function groupWeeklyTransferEventLogs(logs: EventLog[]) {
   let sum = 0;
 
-  const groupedLogs = logs.reduce<Record<number, TransferEventLog[]>>(
-    (allGroupedLogs, currTransfer) => {
-      const dayIndex = differenceInCalendarDays(
-        new Date(),
-        currTransfer.blockDate
-      );
+  const groupedLogs = logs.reduce<Record<number, EventLog[]>>(
+    (allGroupedLogs, currLog) => {
+      const dayIndex = differenceInCalendarDays(new Date(), currLog.blockDate);
 
       sum +=
-        currTransfer.functionName === "burnAndReceiveNFT"
-          ? Number(currTransfer.data)
-          : Number(ethers.utils.formatEther(currTransfer.data));
+        currLog.functionName === "burnAndReceiveNFT"
+          ? Number(currLog.data)
+          : Number(ethers.utils.formatEther(currLog.data));
 
       const indexMap: Record<number, number> = {
         0: 7,
@@ -31,7 +28,7 @@ export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
         ...allGroupedLogs,
         [indexMap[dayIndex]]: [
           ...(allGroupedLogs[indexMap[dayIndex]] || []),
-          currTransfer,
+          currLog,
         ],
       };
     },
@@ -44,8 +41,8 @@ export function groupWeeklyTransferEventLogs(logs: TransferEventLog[]) {
   };
 }
 
-export function groupAirdropsByDate(logs: TransferEventLog[]) {
-  const groupedLogs = logs.reduce<Record<string, TransferEventLog[]>>(
+export function groupAirdropsByDate(logs: EventLog[]) {
+  const groupedLogs = logs.reduce<Record<string, EventLog[]>>(
     (allGroupedLogs, currTransfer) => {
       return {
         ...allGroupedLogs,
@@ -58,7 +55,19 @@ export function groupAirdropsByDate(logs: TransferEventLog[]) {
     {}
   );
 
+  const keys = Object.keys(groupedLogs);
+  const lastFiveKeys = keys.slice(Math.max(keys.length - 5, 1));
+
+  const lastFiveObject = lastFiveKeys.reduce<Record<string, EventLog[]>>(
+    (acc, key) => {
+      acc[key] = groupedLogs[key];
+
+      return acc;
+    },
+    {}
+  );
+
   return {
-    groupedLogs,
+    groupedLogs: lastFiveObject,
   };
 }

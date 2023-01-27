@@ -11,7 +11,7 @@ import { prismaClient } from "../db-client";
  */
 export const getWeeklyMinted = async (_: Request, res: Response) => {
   try {
-    const mints = await prismaClient.transferEventLog.findMany({
+    const mints = await prismaClient.eventLog.findMany({
       where: {
         functionName: { equals: "burnAndReceiveNFT" },
         blockDate: {
@@ -44,10 +44,8 @@ export const getWeeklyMinted = async (_: Request, res: Response) => {
  */
 export const totalNfts = async (_: Request, res: Response) => {
   try {
-    const nfts = await prismaClient.transferEventLog.findMany({
-      where: {
-        functionName: { equals: "burnAndReceiveNFT" },
-      },
+    const nfts = await prismaClient.eventLog.findMany({
+      where: { functionName: { equals: "burnAndReceiveNFT" } },
     });
 
     const ratio = await getRatio();
