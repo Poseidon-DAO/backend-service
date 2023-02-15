@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,35 +8,42 @@ datasource db {
 }
 
 model Poll {
-  id  Int  @id @default(autoincrement())
-  hex Int  @unique
+  id          Int    @id @default(autoincrement())
+  hex         Int    @unique
   description String
 }
 
 model Block {
-  id  Int  @id @default(1)
+  id      Int    @id @default(1)
+  blockNo String @unique @default("")
+}
+
+model ManifoldBlock {
+  id      Int    @id @default(1)
   blockNo String @unique @default("")
 }
 
 model EventLog {
-  id String @unique @id @default(uuid())
-  address String 
-  topics String []
-  data String
-  blockNumber String
-  transactionHash String
+  id               String   @id @unique @default(uuid())
+  address          String
+  topics           String[]
+  data             String
+  blockNumber      String
+  transactionHash  String
   transactionIndex String
-  blockHash String
-  logIndex String 
-  removed Boolean
-  blockDate DateTime @db.Timestamptz(3)
-  timestamp String 
-  functionName String?
+  blockHash        String
+  logIndex         String
+  removed          Boolean
+  blockDate        DateTime @db.Timestamptz(3)
+  timestamp        String
+  functionName     String?
 }
 
-
-
-
-
-
-
+model AirdropUsers {
+  id               Int    @id @default(autoincrement())
+  address          String
+  amount           Int
+  provider         String
+  blockDate        DateTime @db.Timestamptz(3)
+  timestamp        String     
+}
