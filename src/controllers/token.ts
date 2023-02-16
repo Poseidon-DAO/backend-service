@@ -137,7 +137,13 @@ export const getVests = async (_: Request, res: Response) => {
  */
 export const getAiradropUsers = async (req: Request, res: Response) => {
   try {
-    const { tokenId = "", dates = [], amount = "" } = req.body;
+    const {
+      tokenId = "",
+      amount = "",
+      fromDate = "",
+      toDate = "",
+      atDate = "",
+    } = req.body;
 
     const airdropUsers = await prismaClient.airdropUsers.findMany({
       where: {
@@ -146,10 +152,19 @@ export const getAiradropUsers = async (req: Request, res: Response) => {
             ...(!!tokenId && {
               tokenId: { equals: tokenId },
             }),
-            ...(!!dates.length && {
+            ...((!!fromDate || !!toDate) && {
               blockDate: {
-                gte: new Date(dates[0]).toISOString(),
-                lte: new Date(dates[1]).toISOString(),
+                ...(!!fromDate && {
+                  gte: new Date(fromDate).toISOString(),
+                }),
+                ...(!!toDate && {
+                  lte: new Date(toDate).toISOString(),
+                }),
+              },
+            }),
+            ...(!!atDate && {
+              blockDate: {
+                equals: atDate,
               },
             }),
             ...(!!amount && {
