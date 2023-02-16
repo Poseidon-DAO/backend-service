@@ -131,3 +131,47 @@ export const getVests = async (_: Request, res: Response) => {
     res.send(err.message);
   }
 };
+
+/**
+ * @route GET /
+ */
+export const getAiradropUsers = async (req: Request, res: Response) => {
+  try {
+    const { tokenId = "", dates = [], amount = "" } = req.body;
+
+    const airdropUsers = await prismaClient.airdropUsers.findMany({
+      where: {
+        AND: [
+          {
+            ...(!!tokenId && {
+              tokenId: { equals: tokenId },
+            }),
+            ...(!!dates.length && {
+              blockDate: {
+                gte: new Date(dates[0]).toISOString(),
+                lte: new Date(dates[1]).toISOString(),
+              },
+            }),
+            ...(!!amount && {
+              amount: { equals: amount },
+            }),
+          },
+        ],
+      },
+    });
+
+    const mintsCount = airdropUsers.reduce((acc, item) => acc + item.amount, 0);
+
+    if (!airdropUsers && !airdropUsers.length) {
+      res.statusCode = 404;
+      throw new Error("No data available!");
+    }
+
+    return res.json({
+      mintsCount,
+      users: airdropUsers,
+    });
+  } catch (err) {
+    res.send(err.message);
+  }
+};

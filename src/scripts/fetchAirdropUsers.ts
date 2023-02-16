@@ -7,11 +7,12 @@ import { prismaClient } from "../db-client";
 import { EMPTY_ADDRESS } from "../constants/token";
 import ManifoldAbi from "../contracts/ManifoldAbi.json";
 
+const ManifoldAbiInterface = new utils.Interface(ManifoldAbi);
+const url = `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ID}`;
+
 export const TRANSFER_EVENT_SIGNITURE = `0x${keccak256(
   "TransferSingle(address,address,address,uint256,uint256)"
 ).toString("hex")}`;
-const ManifoldAbiInterface = new utils.Interface(ManifoldAbi);
-const url = `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ID}`;
 
 async function fetchAidropUsers() {
   const blockNoOnDB = await prismaClient.manifoldBlock.findFirst();
@@ -55,7 +56,9 @@ async function fetchAidropUsers() {
   const logs = (logsJson.result || []) as EventLog[];
 
   if (!!logs.length) {
-    const mints = logs.filter((log) => log.topics[2] === EMPTY_ADDRESS);
+    const mints = logs.filter((log) => {
+      return log.topics[2] === EMPTY_ADDRESS;
+    });
 
     const timestampRequests = [];
     for (let i = 0; i < mints.length; i++) {
@@ -91,9 +94,11 @@ async function fetchAidropUsers() {
         return {
           address: decodedInput[2],
           amount: Number(decodedInput[4]),
+          tokenId: Number(decodedInput[3]),
           provider: "Manifold",
           blockDate: new Date(Number(mint.timestamp) * 1000),
           timestamp: `${Number(mint.timestamp) * 1000}`,
+          blockNumber: mint.blockNumber,
         };
       });
 

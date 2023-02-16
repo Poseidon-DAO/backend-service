@@ -47,9 +47,11 @@ CREATE TABLE "AirdropUsers" (
     "id" SERIAL NOT NULL,
     "address" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
+    "tokenId" INTEGER NOT NULL,
     "provider" TEXT NOT NULL,
     "blockDate" TIMESTAMPTZ(3) NOT NULL,
     "timestamp" TEXT NOT NULL,
+    "blockNumber" TEXT NOT NULL,
 
     CONSTRAINT "AirdropUsers_pkey" PRIMARY KEY ("id")
 );

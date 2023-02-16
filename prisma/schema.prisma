@@ -43,7 +43,9 @@ model AirdropUsers {
   id               Int    @id @default(autoincrement())
   address          String
   amount           Int
+  tokenId          Int
   provider         String
   blockDate        DateTime @db.Timestamptz(3)
-  timestamp        String     
+  timestamp        String  
+  blockNumber      String 
 }
