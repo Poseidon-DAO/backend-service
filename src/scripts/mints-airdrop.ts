@@ -2,19 +2,27 @@ import keccak256 from "keccak256";
 import fetch from "cross-fetch";
 import { EventLog } from "@prisma/client";
 import { utils } from "ethers";
+import dotenv from "dotenv";
 
 import { prismaClient } from "../db-client";
 import { EMPTY_ADDRESS } from "../constants/token";
 import ManifoldAbi from "../contracts/ManifoldAbi.json";
 
+dotenv.config();
+
 const ManifoldAbiInterface = new utils.Interface(ManifoldAbi);
 const url = `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ID}`;
+const snapshotNumber = 1;
 
 export const TRANSFER_EVENT_SIGNITURE = `0x${keccak256(
   "TransferSingle(address,address,address,uint256,uint256)"
 ).toString("hex")}`;
 
-async function fetchAidropUsers() {
+async function main() {
+  await prismaClient.airdropUsers.deleteMany({
+    where: { snapshotNumber },
+  });
+
   const blockNoOnDB = await prismaClient.manifoldBlock.findFirst();
 
   const blockNoResponse = await fetch(url, {
@@ -99,6 +107,7 @@ async function fetchAidropUsers() {
           blockDate: new Date(Number(mint.timestamp) * 1000),
           timestamp: `${Number(mint.timestamp) * 1000}`,
           blockNumber: mint.blockNumber,
+          snapshotNumber: 1,
         };
       });
 
@@ -118,7 +127,7 @@ async function fetchAidropUsers() {
   }
 }
 
-fetchAidropUsers()
+main()
   .then(() => process.exit(0))
   .catch((error) => {
     console.error(error);

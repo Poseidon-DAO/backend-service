@@ -137,7 +137,13 @@ export const getVests = async (_: Request, res: Response) => {
  */
 export const getAiradropUsers = async (req: Request, res: Response) => {
   try {
-    const { tokenId = "", amount = "", fromDate = "", toDate = "" } = req.body;
+    const {
+      tokenId = "",
+      amount = "",
+      fromDate = "",
+      toDate = "",
+      snapshot = "",
+    } = req.body;
 
     const airdropUsers = await prismaClient.airdropUsers.findMany({
       where: {
@@ -146,6 +152,12 @@ export const getAiradropUsers = async (req: Request, res: Response) => {
             ...(!!tokenId && {
               tokenId: { equals: tokenId },
             }),
+            ...(!!snapshot && {
+              snapshotNumber: { equals: snapshot },
+            }),
+            ...(!!amount && {
+              amount: { equals: amount },
+            }),
             ...(!!fromDate &&
               !!toDate && {
                 blockDate: {
@@ -153,25 +165,19 @@ export const getAiradropUsers = async (req: Request, res: Response) => {
                   lte: new Date(toDate).toISOString(),
                 },
               }),
-            ...(!!amount && {
-              amount: { equals: amount },
-            }),
           },
         ],
       },
     });
 
-    const mintsCount = airdropUsers.reduce((acc, item) => acc + item.amount, 0);
+    const totalNfts = airdropUsers.reduce((acc, item) => acc + item.amount, 0);
 
     if (!airdropUsers && !airdropUsers.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
-    return res.json({
-      mintsCount,
-      users: airdropUsers,
-    });
+    return res.json({ totalNfts, users: airdropUsers });
   } catch (err) {
     res.send(err.message);
   }

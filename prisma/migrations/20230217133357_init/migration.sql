@@ -52,6 +52,7 @@ CREATE TABLE "AirdropUsers" (
     "blockDate" TIMESTAMPTZ(3) NOT NULL,
     "timestamp" TEXT NOT NULL,
     "blockNumber" TEXT NOT NULL,
+    "snapshotNumber" INTEGER NOT NULL,
 
     CONSTRAINT "AirdropUsers_pkey" PRIMARY KEY ("id")
 );

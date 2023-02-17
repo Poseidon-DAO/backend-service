@@ -48,4 +48,5 @@ model AirdropUsers {
   blockDate        DateTime @db.Timestamptz(3)
   timestamp        String  
   blockNumber      String 
+  snapshotNumber   Int
 }
