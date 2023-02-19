@@ -41,4 +41,4 @@ e.g.
   yarn run holds-airdrop "2022-11-28 21:00:23+01" 2
 ```
 
-`snapshotNumber` should be 2 or greater, 1 is automatically give to mints script
+`snapshotNumber` should be 2 or greater, 1 is automatically given to mints script
