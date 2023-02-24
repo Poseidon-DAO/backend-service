@@ -16,14 +16,14 @@ services:
     container_name: admin-backend
     build:
       context: .
-      dockerfile: ./dev.Dockerfile
-      # dockerfile: ./Dockerfile
+      # dockerfile: ./dev.Dockerfile
+      dockerfile: ./Dockerfile
     ports:
       - 3000:3000
-    volumes:
-      - ./config:/usr/src/app/config
-      - .:/usr/src/app
-      - ./data:/data
+    # volumes:
+    #   - ./config:/usr/src/app/config
+    #   - .:/usr/src/app
+    #   - ./data:/data
     # depends_on:
       # - postgres
     <<: [*network]
