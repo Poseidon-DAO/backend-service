@@ -5,6 +5,7 @@ import cors from "cors";
 
 import * as tokenController from "@controllers/token";
 import * as nftController from "@controllers/nft";
+import * as artistController from "@controllers/artist";
 
 import { startScheduledTasks } from "@tasks/index";
 
@@ -17,13 +18,16 @@ app.use(bodyParser.json());
 app.use(cors());
 app.set("port", process.env.PORT || 3000);
 
+app.get("/artists", artistController.getArtists);
+app.post("/artists", artistController.submitApplication);
+
+app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
+app.get("/nft/total", nftController.totalNfts);
+
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
 app.get("/token/weeklyBurned", tokenController.getWeeklyBurned);
 app.get("/token/airdropsByDate", tokenController.getAirdrops);
 app.get("/token/vestsByDate", tokenController.getVests);
 app.get("/token/airdropUsers", tokenController.getAiradropUsers);
-
-app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
-app.get("/nft/total", nftController.totalNfts);
 
 export default app;

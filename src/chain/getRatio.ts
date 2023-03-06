@@ -8,7 +8,7 @@ export async function getRatio() {
     process.env.ALCHEMY_ID
   );
   const contract = new ethers.Contract(
-    process.env.SC_ERC20_ADDRESS,
+    process.env.SC_ERC20_ADDRESS!,
     ERC20Abi,
     provider
   );
