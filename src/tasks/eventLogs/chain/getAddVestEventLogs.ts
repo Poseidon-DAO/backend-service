@@ -9,7 +9,10 @@ import { ADD_VEST_EVENT_SIGNITURE } from "../constants";
 
 const ERC20Interface = new utils.Interface(ERC20Abi);
 
-export async function getAddVestEventLogs(fromBlock: string, toBlock: string) {
+export async function getAddVestEventLogs(
+  fromBlock?: string,
+  toBlock?: string
+) {
   console.log("READING ADD VEST EVENT LOGS FROM CHAIN START...");
 
   const addVestEventlogsResponse = await fetch(url, {

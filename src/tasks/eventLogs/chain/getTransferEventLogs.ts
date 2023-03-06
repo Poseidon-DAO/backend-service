@@ -9,7 +9,10 @@ import { TRANSFER_EVENT_SIGNITURE } from "../constants";
 
 const ERC20Interface = new utils.Interface(ERC20Abi);
 
-export async function getTransferEventLogs(fromBlock: string, toBlock: string) {
+export async function getTransferEventLogs(
+  fromBlock?: string,
+  toBlock?: string
+) {
   console.log("READING TRANSFER EVENT LOGS FROM CHAIN START...");
 
   const transferEventlogsResponse = await fetch(url, {

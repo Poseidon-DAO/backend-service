@@ -32,19 +32,19 @@ export const getWeeklyTransfers = async (_: Request, res: Response) => {
       },
     });
 
-    const { groupedLogs, sum } = groupWeeklyTransferEventLogs(transfers);
-
-    if (!transfers && !transfers.length) {
+    if (!transfers.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
+
+    const { groupedLogs, sum } = groupWeeklyTransferEventLogs(transfers);
 
     return res.json({
       totalSumMoved: sum,
       weeklyTransfers: groupedLogs,
     });
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };
 
@@ -70,19 +70,19 @@ export const getWeeklyBurned = async (_: Request, res: Response) => {
       },
     });
 
-    const { groupedLogs, sum } = groupWeeklyTransferEventLogs(burns);
-
-    if (!burns && !burns.length) {
+    if (!burns.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
+
+    const { groupedLogs, sum } = groupWeeklyTransferEventLogs(burns);
 
     return res.json({
       totalSumBurned: sum,
       weeklyBurns: groupedLogs,
     });
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };
 
@@ -98,14 +98,14 @@ export const getAirdrops = async (_: Request, res: Response) => {
 
     const { groupedLogs } = groupAirdropsByDate(airdrops);
 
-    if (!airdrops && !airdrops.length) {
+    if (!airdrops.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
     return res.json({ airdrops: groupedLogs });
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };
 
@@ -121,14 +121,14 @@ export const getVests = async (_: Request, res: Response) => {
 
     const { groupedLogs } = groupAirdropsByDate(vests);
 
-    if (!vests && !vests.length) {
+    if (!vests.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
     return res.json({ vests: groupedLogs });
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };
 
@@ -172,13 +172,13 @@ export const getAiradropUsers = async (req: Request, res: Response) => {
 
     const totalNfts = airdropUsers.reduce((acc, item) => acc + item.amount, 0);
 
-    if (!airdropUsers && !airdropUsers.length) {
+    if (!airdropUsers.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
     return res.json({ totalNfts, users: airdropUsers });
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };

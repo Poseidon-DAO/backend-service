@@ -27,7 +27,7 @@ export async function getTimeStampForBlock(log: EventLog) {
   console.log(`READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN END...`);
 
   return {
-    timestamp: `${Number(blockInfoOnChain.timestamp) * 1000}`,
     ...log,
+    timestamp: `${Number(blockInfoOnChain.timestamp) * 1000}`,
   };
 }
