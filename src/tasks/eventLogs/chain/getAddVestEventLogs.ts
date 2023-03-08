@@ -2,7 +2,7 @@ import { type EventLog } from "@prisma/client";
 import { utils } from "ethers";
 import fetch from "cross-fetch";
 
-import url from "@constants/alchemy-url";
+import { BASE_URL } from "@constants/alchemy-url";
 import ERC20Abi from "@contracts/ERC20Abi.json";
 
 import { ADD_VEST_EVENT_SIGNITURE } from "../constants";
@@ -12,7 +12,7 @@ const ERC20Interface = new utils.Interface(ERC20Abi);
 export async function getAddVestEventLogs(fromBlock: string, toBlock: string) {
   console.log("READING ADD VEST EVENT LOGS FROM CHAIN START...");
 
-  const addVestEventlogsResponse = await fetch(url, {
+  const addVestEventlogsResponse = await fetch(BASE_URL, {
     method: "POST",
     headers: {
       accept: "application/json",
@@ -41,7 +41,7 @@ export async function getAddVestEventLogs(fromBlock: string, toBlock: string) {
       console.log(
         `READING TRANSACTION BY HASH FOR LOG ${log.blockHash} FROM CHAIN START...`
       );
-      const res = await fetch(url, {
+      const res = await fetch(BASE_URL, {
         method: "POST",
         headers: {
           accept: "application/json",

@@ -25,5 +25,6 @@ app.get("/token/airdropUsers", tokenController.getAiradropUsers);
 
 app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
 app.get("/nft/total", nftController.totalNfts);
+app.get("/nft/collection", nftController.getCollection);
 
 export default app;

@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -41,13 +41,46 @@ model EventLog {
 }
 
 model AirdropUsers {
-  id               Int    @id @default(autoincrement())
-  address          String
-  amount           Int
-  tokenId          Int
-  provider         String
-  blockDate        DateTime @db.Timestamptz(3)
-  timestamp        String  
-  blockNumber      String 
-  snapshotNumber   Int
+  id             Int      @id @default(autoincrement())
+  address        String
+  amount         Int
+  tokenId        Int
+  provider       String
+  blockDate      DateTime @db.Timestamptz(3)
+  timestamp      String
+  blockNumber    String
+  snapshotNumber Int
+}
+
+model Artist {
+  id            Int     @id @default(autoincrement())
+  name          String
+  email         String  @unique
+  bio           String
+  exhibitions   String?
+  samples       String?
+  twitter_url   String
+  instagram_url String?
+  website       String?
+  project       String
+}
+
+model Collection {
+  id               String   @id @unique @default(uuid())
+  platform         String
+  platformAddress  String 
+  tokenId          String
+  tokenType        String
+  title            String
+  balance          String
+  description      String
+  tokenUriRaw      String
+  tokenUriGateway  String
+  image            String
+  createdBy        String
+  yearCreated      String
+  mimeType         String
+  mimeUri          String
+  tags             String[]
+  timeLastUpdated  DateTime @db.Timestamptz(3)
 }
