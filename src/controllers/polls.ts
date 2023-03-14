@@ -20,14 +20,14 @@ export const getPolls = async (
       take: PAGE_SIZE,
     });
 
-    if (!polls && !polls.length) {
+    if (!polls.length) {
       res.statusCode = 404;
       throw new Error("No data available!");
     }
 
     return res.json(polls);
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };
 
@@ -59,6 +59,6 @@ export const createPoll = async (
 
     res.json(result);
   } catch (err) {
-    res.send(err.message);
+    res.send((err as Error).message);
   }
 };
