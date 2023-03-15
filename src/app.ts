@@ -21,13 +21,14 @@ app.set("port", process.env.PORT || 3000);
 app.get("/artists", artistController.getArtists);
 app.post("/artists", artistController.submitApplication);
 
-app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
-app.get("/nft/total", nftController.totalNfts);
-
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
 app.get("/token/weeklyBurned", tokenController.getWeeklyBurned);
 app.get("/token/airdropsByDate", tokenController.getAirdrops);
 app.get("/token/vestsByDate", tokenController.getVests);
 app.get("/token/airdropUsers", tokenController.getAiradropUsers);
+
+app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
+app.get("/nft/total", nftController.totalNfts);
+app.get("/nft/collection", nftController.getCollection);
 
 export default app;
