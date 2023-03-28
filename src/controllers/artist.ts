@@ -1,12 +1,16 @@
 import { type Request, type Response } from "express";
 
-import { formatArtistApplication, sendEmail } from "@services/mailer";
+import {
+  formatArtistApplication,
+  formatMetaborgBurnSubmit,
+  sendEmail,
+} from "@services/mailer";
 import {
   slackApplicationSuccess,
   slackApplicationError,
 } from "@services/slack";
 import { prismaClient } from "../db-client";
-import { ArtistProps, ArtistSchema } from "../types/artist";
+import { ArtistProps, ArtistSchema, MetaborgUserSchema } from "../types/artist";
 import { ZodError } from "zod";
 
 /**
@@ -66,6 +70,48 @@ export const submitApplication = async (
     }
 
     await slackApplicationError(req.body, JSON.stringify(err));
+    res.status(400).json({ message: (err as Error).message });
+  }
+};
+
+/**
+ * @route POST /
+ */
+export const submitMetaborgBurn = async (
+  req: Request<
+    {},
+    {},
+    { name: string; email: string; address: string; tokenId: string }
+  >,
+  res: Response
+) => {
+  try {
+    const validatedUser = MetaborgUserSchema.parse(req.body);
+
+    await prismaClient.metaborgBurnUsers.create({
+      data: validatedUser,
+    });
+
+    await sendEmail(
+      process.env.POSTMARK_SENDER!,
+      process.env.POSTMARK_SENDER_JOVANI_MOTTA_EMAIL!,
+      process.env.POSTMARK_SUBJECT!,
+      formatMetaborgBurnSubmit(validatedUser)
+    );
+
+    return res.json({});
+  } catch (err) {
+    if (err instanceof ZodError) {
+      const formattedErrors = err.flatten().fieldErrors;
+
+      const errorMessage = {
+        message: "Validation error",
+        errors: formattedErrors,
+      };
+
+      return res.status(400).json(errorMessage);
+    }
+
     res.status(400).json({ message: (err as Error).message });
   }
 };

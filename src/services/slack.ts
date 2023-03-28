@@ -1,5 +1,5 @@
 import fetch from "cross-fetch";
-import { ArtistProps } from "../types/artist";
+import { ArtistProps, MetaborgUserProps } from "../types/artist";
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK!;
 
@@ -21,7 +21,9 @@ const slackApplicationError = async (
   });
 };
 
-const slackApplicationSuccess = async (artist: ArtistProps): Promise<void> => {
+const slackApplicationSuccess = async (
+  artist: ArtistProps | MetaborgUserProps
+): Promise<void> => {
   if (!SLACK_WEBHOOK_URL) return;
 
   await fetch(SLACK_WEBHOOK_URL, {

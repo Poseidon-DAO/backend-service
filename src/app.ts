@@ -20,6 +20,7 @@ app.set("port", process.env.PORT || 3000);
 
 app.get("/artists", artistController.getArtists);
 app.post("/artists", artistController.submitApplication);
+app.post("/artists/metaborg", artistController.submitMetaborgBurn);
 
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
 app.get("/token/weeklyBurned", tokenController.getWeeklyBurned);

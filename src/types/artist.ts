@@ -45,4 +45,17 @@ const ArtistSchema = z.object({
 
 type ArtistProps = z.infer<typeof ArtistSchema>;
 
-export { ArtistProps, ArtistSchema };
+const MetaborgUserSchema = z.object({
+  name: z.string(),
+  email: z
+    .string()
+    .toLowerCase()
+    .trim()
+    .email({ message: "The email field has a wrong email." }),
+  address: z.string(),
+  tokenId: z.string(),
+});
+
+type MetaborgUserProps = z.infer<typeof MetaborgUserSchema>;
+
+export { ArtistProps, MetaborgUserProps, ArtistSchema, MetaborgUserSchema };

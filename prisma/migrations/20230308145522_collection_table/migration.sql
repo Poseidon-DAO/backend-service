@@ -1,18 +1,3 @@
--- CreateTable
-CREATE TABLE "Artist" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "bio" TEXT NOT NULL,
-    "exhibitions" TEXT,
-    "samples" TEXT,
-    "twitter_url" TEXT NOT NULL,
-    "instagram_url" TEXT,
-    "website" TEXT,
-    "project" TEXT NOT NULL,
-
-    CONSTRAINT "Artist_pkey" PRIMARY KEY ("id")
-);
 
 -- CreateTable
 CREATE TABLE "Collection" (
@@ -36,9 +21,6 @@ CREATE TABLE "Collection" (
 
     CONSTRAINT "Collection_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "Artist_email_key" ON "Artist"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Collection_id_key" ON "Collection"("id");
