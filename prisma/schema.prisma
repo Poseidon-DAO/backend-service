@@ -65,6 +65,17 @@ model Artist {
   project       String
 }
 
+model MetaborgBurnUsers {
+  id            Int     @id @default(autoincrement())
+  name          String
+  email         String 
+  address       String
+  tokenId       String 
+
+  @@unique([email, tokenId])
+  @@index([email, tokenId])
+}
+
 model Collection {
   id               String   @id @unique @default(uuid())
   platform         String

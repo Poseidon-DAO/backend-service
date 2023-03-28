@@ -1,6 +1,6 @@
 import fetch from "cross-fetch";
 import { POSTMARK_URL } from "@constants/mail";
-import { ArtistProps } from "../types/artist";
+import { ArtistProps, MetaborgUserProps } from "../types/artist";
 
 const sendEmail = async (
   from: string,
@@ -57,4 +57,17 @@ const formatArtistApplication = (artist: ArtistProps): string => {
   </html>`;
 };
 
-export { sendEmail, formatArtistApplication };
+const formatMetaborgBurnSubmit = (artist: MetaborgUserProps): string => {
+  return `<html>
+    <body>
+      <h1>Burn Data</h1></br>
+      <h3>${artist.name} - ${artist.email}</h3></br>
+      <h2>Address</h2>
+      <p>${artist.address}</p></br></br>
+      <h2>Token id</h2>
+      <a>${artist.tokenId}</a>
+    </body>
+  </html>`;
+};
+
+export { sendEmail, formatArtistApplication, formatMetaborgBurnSubmit };
