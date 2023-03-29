@@ -94,7 +94,7 @@ export const submitMetaborgBurn = async (
 
     await sendEmail(
       process.env.POSTMARK_SENDER!,
-      process.env.POSTMARK_SENDER_JOVANI_MOTTA_EMAIL!,
+      process.env.POSTMARK_SENDER_GIOVANNI_MOTTA_EMAIL!,
       process.env.POSTMARK_SUBJECT!,
       formatMetaborgBurnSubmit(validatedUser)
     );
