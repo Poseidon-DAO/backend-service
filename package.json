@@ -15,7 +15,7 @@
     "holds-airdrop": "yarn build && node dist/scripts/holds-airdrop.js"
   },
   "dependencies": {
-    "@prisma/client": "4.7.1",
+    "@prisma/client": "^4.13.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "cron": "^2.2.0",
