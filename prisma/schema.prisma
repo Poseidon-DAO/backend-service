@@ -66,32 +66,35 @@ model Artist {
 }
 
 model MetaborgBurnUsers {
-  id            Int     @id @default(autoincrement())
-  name          String
-  email         String 
-  address       String
-  tokenId       String 
+  id      Int     @id @default(autoincrement())
+  name    String
+  phone   String
+  email   String
+  address String
+  state   String
+  zip     String
+  tokenId String
 
   @@unique([email, tokenId])
   @@index([email, tokenId])
 }
 
 model Collection {
-  id               String   @id @unique @default(uuid())
-  platform         String
-  platformAddress  String 
-  tokenId          String
-  tokenType        String
-  title            String
-  balance          String
-  description      String
-  tokenUriRaw      String
-  tokenUriGateway  String
-  image            String
-  createdBy        String
-  yearCreated      String
-  mimeType         String
-  mimeUri          String
-  tags             String[]
-  timeLastUpdated  DateTime @db.Timestamptz(3)
+  id              String   @id @unique @default(uuid())
+  platform        String
+  platformAddress String
+  tokenId         String
+  tokenType       String
+  title           String
+  balance         String
+  description     String
+  tokenUriRaw     String
+  tokenUriGateway String
+  image           String
+  createdBy       String
+  yearCreated     String
+  mimeType        String
+  mimeUri         String
+  tags            String[]
+  timeLastUpdated DateTime @db.Timestamptz(3)
 }

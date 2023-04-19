@@ -47,12 +47,15 @@ type ArtistProps = z.infer<typeof ArtistSchema>;
 
 const MetaborgUserSchema = z.object({
   name: z.string(),
+  phone: z.string(),
   email: z
     .string()
     .toLowerCase()
     .trim()
     .email({ message: "The email field has a wrong email." }),
   address: z.string(),
+  state: z.string(),
+  zip: z.string(),
   tokenId: z.string(),
 });
 

@@ -81,7 +81,15 @@ export const submitMetaborgBurn = async (
   req: Request<
     {},
     {},
-    { name: string; email: string; address: string; tokenId: string }
+    {
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      state: string;
+      zip: string;
+      tokenId: string;
+    }
   >,
   res: Response
 ) => {
