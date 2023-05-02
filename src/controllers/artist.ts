@@ -86,6 +86,7 @@ export const submitMetaborgBurn = async (
       phone: string;
       email: string;
       address: string;
+      country: string;
       state: string;
       zip: string;
       tokenId: string;

@@ -71,6 +71,7 @@ model MetaborgBurnUsers {
   phone   String
   email   String
   address String
+  country String
   state   String
   zip     String
   tokenId String
