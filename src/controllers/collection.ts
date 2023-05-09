@@ -56,6 +56,12 @@ export const vote = async (
       });
     }
 
+    if (!user.isGuardian) {
+      return res.status(401).json({
+        error: `User with address: <${userAddress}> is not a Guardian, thus is not allowed to vote!`,
+      });
+    }
+
     const collection = await prismaClient.collection.findUnique({
       where: { id: collectionId },
     });
@@ -108,6 +114,12 @@ export const revote = async (
     if (!user) {
       return res.status(404).json({
         error: `User with address: <${userAddress}> does not exist!`,
+      });
+    }
+
+    if (!user.isGuardian) {
+      return res.status(401).json({
+        error: `User with address: <${userAddress}> is not a Guardian, thus is not allowed to vote!`,
       });
     }
 

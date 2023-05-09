@@ -16,6 +16,7 @@
       "@contracts/*": ["contracts/*"],
       "@controllers/*": ["controllers/*"],
       "@services/*": ["services/*"],
+      "@sockets/*": ["sockets/*"],
       "@tasks/*": ["tasks/*"],
       "@types/*": ["types/*"],
       "@utils/*": ["utils/*"]
