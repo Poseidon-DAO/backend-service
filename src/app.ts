@@ -1,3 +1,4 @@
+import { Alchemy } from "alchemy-sdk";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -10,11 +11,16 @@ import * as tokenController from "@controllers/token";
 import * as userController from "@controllers/user";
 
 import { startScheduledTasks } from "@tasks/index";
+import { mintEventconfig, onGNftMint, settings } from "@sockets/index";
 
 dotenv.config();
 
+const alchemy = new Alchemy(settings);
 const app: Express = express();
+
 startScheduledTasks();
+
+alchemy.ws.on(mintEventconfig, onGNftMint);
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -41,6 +47,5 @@ app.post("/user/register", userController.register);
 
 export default app;
 
-// 1. Make voting possible
-// 2. Fetch collection (All, Superrare, Foundation, Nifty Gateway, OpenSea)
-// 3. Most voted, Most loved, Most hated, Price high/low and vice versa, Most recent, Oldest
+// 1. Fetch collection (All, Superrare, Foundation, Nifty Gateway, OpenSea)
+// 2. Most voted, Most loved, Most hated, Price high/low and vice versa, Most recent, Oldest

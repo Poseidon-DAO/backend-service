@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",
+    "alchemy-sdk": "^2.8.2",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "cron": "^2.2.0",
