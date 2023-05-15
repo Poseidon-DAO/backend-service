@@ -1,14 +1,14 @@
 import { type EventLog } from "@prisma/client";
 import fetch from "cross-fetch";
 
-import { BASE_URL } from "@constants/alchemy-url";
+import { getBaseUrl } from "@constants/alchemy-url";
 
 export async function getTimeStampForBlock(log: EventLog) {
   console.log(
     `READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN START...`
   );
 
-  const blockInfoResponse = await fetch(BASE_URL, {
+  const blockInfoResponse = await fetch(getBaseUrl(), {
     method: "POST",
     headers: {
       accept: "application/json",

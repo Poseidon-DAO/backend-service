@@ -1,10 +1,10 @@
-import { BASE_URL } from "@constants/alchemy-url";
+import { getBaseUrl } from "@constants/alchemy-url";
 import fetch from "cross-fetch";
 
 export async function getMostRecentBlock() {
   console.log("READING BLOCK NUMBER FROM CHAIN START...");
 
-  const blockNoResponse = await fetch(BASE_URL, {
+  const blockNoResponse = await fetch(getBaseUrl(), {
     method: "POST",
     headers: {
       accept: "application/json",

@@ -1,17 +1,14 @@
 import { type Request, type Response } from "express";
+import { ZodError } from "zod";
 
-import {
-  formatArtistApplication,
-  formatMetaborgBurnSubmit,
-  sendEmail,
-} from "@services/mailer";
+import { formatArtistApplication, sendEmail } from "@services/mailer";
 import {
   slackApplicationSuccess,
   slackApplicationError,
 } from "@services/slack";
+
 import { prismaClient } from "../db-client";
 import { ArtistProps, ArtistSchema, MetaborgUserSchema } from "../types/artist";
-import { ZodError } from "zod";
 
 /**
  * @route GET /
@@ -23,11 +20,6 @@ export const getArtists = async (
   try {
     const artists = await prismaClient.artist.findMany({});
 
-    if (!artists.length) {
-      res.statusCode = 404;
-      throw new Error("No data available!");
-    }
-
     return res.json(artists);
   } catch (err) {
     res.send((err as Error).message);
@@ -37,7 +29,7 @@ export const getArtists = async (
 /**
  * @route POST /
  */
-export const submitApplication = async (
+export const postArtist = async (
   req: Request<{ page: number }, {}, ArtistProps>,
   res: Response
 ) => {
@@ -70,57 +62,6 @@ export const submitApplication = async (
     }
 
     await slackApplicationError(req.body, JSON.stringify(err));
-    res.status(400).json({ message: (err as Error).message });
-  }
-};
-
-/**
- * @route POST /
- */
-export const submitMetaborgBurn = async (
-  req: Request<
-    {},
-    {},
-    {
-      name: string;
-      phone: string;
-      email: string;
-      address: string;
-      country: string;
-      state: string;
-      zip: string;
-      tokenId: string;
-    }
-  >,
-  res: Response
-) => {
-  try {
-    const validatedUser = MetaborgUserSchema.parse(req.body);
-
-    await prismaClient.metaborgBurnUsers.create({
-      data: validatedUser,
-    });
-
-    await sendEmail(
-      process.env.POSTMARK_SENDER!,
-      process.env.POSTMARK_SENDER_GIOVANNI_MOTTA_EMAIL!,
-      process.env.POSTMARK_SUBJECT!,
-      formatMetaborgBurnSubmit(validatedUser)
-    );
-
-    return res.json({});
-  } catch (err) {
-    if (err instanceof ZodError) {
-      const formattedErrors = err.flatten().fieldErrors;
-
-      const errorMessage = {
-        message: "Validation error",
-        errors: formattedErrors,
-      };
-
-      return res.status(400).json(errorMessage);
-    }
-
     res.status(400).json({ message: (err as Error).message });
   }
 };

@@ -2,7 +2,7 @@ import { type EventLog } from "@prisma/client";
 import { utils } from "ethers";
 import fetch from "cross-fetch";
 
-import { BASE_URL } from "@constants/alchemy-url";
+import { getBaseUrl } from "@constants/alchemy-url";
 import ERC20Abi from "@contracts/ERC20Abi.json";
 
 import { TRANSFER_EVENT_SIGNITURE } from "../constants";
@@ -15,7 +15,7 @@ export async function getTransferEventLogs(
 ) {
   console.log("READING TRANSFER EVENT LOGS FROM CHAIN START...");
 
-  const transferEventlogsResponse = await fetch(BASE_URL, {
+  const transferEventlogsResponse = await fetch(getBaseUrl(), {
     method: "POST",
     headers: {
       accept: "application/json",
@@ -44,7 +44,7 @@ export async function getTransferEventLogs(
       console.log(
         `READING TRANSACTION BY HASH FOR LOG ${log.blockHash} FROM CHAIN START...`
       );
-      const res = await fetch(BASE_URL, {
+      const res = await fetch(getBaseUrl(), {
         method: "POST",
         headers: {
           accept: "application/json",

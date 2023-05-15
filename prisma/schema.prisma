@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["filteredRelationCount"]
 }
 
 datasource db {
@@ -86,7 +87,7 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   isGuardian Boolean  @default(false)
-  gNfts      Int      @default(0)
+  gNfts      String   @default("")
 
   votes Vote[]
 }
@@ -109,17 +110,13 @@ model Collection {
   mimeUri         String
   tags            String[]
   timeLastUpdated DateTime @db.Timestamptz(3)
-
   votes Vote[]
 }
 
-enum VoteValue {
-  DOWNVOTE @map("0")
-  UPVOTE   @map("1")
-}
+
 
 model Vote {
-  vote VoteValue
+  vote String
 
   user   User   @relation(fields: [userId], references: [id])
   userId String

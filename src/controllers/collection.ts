@@ -4,27 +4,73 @@ import { type Request, type Response } from "express";
 import { prismaClient } from "../db-client";
 
 type Platform = "superrare" | "foundation" | "opensea" | "niftygateway";
+type Sorting = "most-voted" | "most-loved" | "most-hated";
+
+type CollectionQueryParams = {
+  platform: Platform;
+  sorting: Sorting;
+};
 
 /**
  * @route GET /
  */
-export const get = async (
-  req: Request<{ platform: Platform }>,
+export const getCollection = async (
+  req: Request<{}, {}, {}, CollectionQueryParams>,
   res: Response
 ) => {
-  const { platform } = req.params;
+  const { platform = null, sorting } = req.query;
 
   try {
-    const collection = await prismaClient.collection.findMany({
-      where: { platform: { equals: platform } },
-    });
+    if (sorting === "most-voted") {
+      const mostVotedCollection = await prismaClient.collection.findMany({
+        where: {
+          platform: platform ? { equals: platform, mode: "insensitive" } : {},
+        },
+        include: { votes: true },
+        orderBy: { votes: { _count: "desc" } },
+      });
 
-    if (!collection) {
-      res.statusCode = 404;
-      throw new Error("No data available!");
+      return res.json(mostVotedCollection);
     }
 
-    return res.json(collection);
+    if (sorting === "most-loved" || sorting === "most-hated") {
+      const mostLovedCollection = await prismaClient.$queryRaw`
+        SELECT
+          "Collection".*,
+          COALESCE(JSON_AGG("Vote".*) FILTER (WHERE "Vote"."vote" IS NOT NULL), '[]') AS "votes"
+        FROM
+          "Collection"
+          LEFT JOIN "Vote" ON "Collection"."id" = "Vote"."collectionId"
+          LEFT JOIN "User" ON "Vote"."userId" = "User"."id"
+          WHERE LOWER("Collection"."platform") = LOWER(COALESCE(${platform}, "Collection"."platform"))
+        GROUP BY
+          "Collection".id
+        ORDER BY
+          CASE
+            WHEN COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+              sorting === "most-loved" ? "DOWNVOTE" : "UPVOTE"
+            }) > COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+        sorting === "most-loved" ? "UPVOTE" : "DOWNVOTE"
+      })
+            THEN 1
+            ELSE 0
+          END ASC,
+          COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+            sorting === "most-loved" ? "UPVOTE" : "DOWNVOTE"
+          }) DESC
+      `;
+
+      return res.json(mostLovedCollection);
+    }
+
+    const defaultCollection = await prismaClient.collection.findMany({
+      where: {
+        platform: platform ? { equals: platform, mode: "insensitive" } : {},
+      },
+      include: { votes: true },
+    });
+
+    return res.json(defaultCollection);
   } catch (err) {
     res.send((err as Error).message);
   }
@@ -33,21 +79,21 @@ export const get = async (
 type VoteCollectionBody = {
   collectionId: string;
   userAddress: string;
-  vote: 0 | 1;
+  vote: "UPVOTE" | "DOWNVOTE";
 };
 
 /**
  * @route POST /
  */
-export const vote = async (
+export const voteCollection = async (
   req: Request<{}, {}, VoteCollectionBody>,
   res: Response
 ) => {
   const { collectionId, userAddress, vote } = req.body;
 
   try {
-    const user = await prismaClient.user.findUnique({
-      where: { address: userAddress },
+    const user = await prismaClient.user.findFirst({
+      where: { address: { equals: userAddress, mode: "insensitive" } },
     });
 
     if (!user) {
@@ -76,7 +122,7 @@ export const vote = async (
       data: {
         collectionId,
         userId: user.id,
-        vote: !!vote ? "UPVOTE" : "DOWNVOTE",
+        vote,
       },
     });
 
@@ -100,15 +146,15 @@ export const vote = async (
 /**
  * @route PATCH /
  */
-export const revote = async (
+export const revoteCollection = async (
   req: Request<{}, {}, VoteCollectionBody>,
   res: Response
 ) => {
   const { collectionId, userAddress, vote } = req.body;
 
   try {
-    const user = await prismaClient.user.findUnique({
-      where: { address: userAddress },
+    const user = await prismaClient.user.findFirst({
+      where: { address: { equals: userAddress, mode: "insensitive" } },
     });
 
     if (!user) {
@@ -143,7 +189,7 @@ export const revote = async (
       data: {
         collectionId,
         userId: user.id,
-        vote: !!vote ? "UPVOTE" : "DOWNVOTE",
+        vote,
       },
     });
 

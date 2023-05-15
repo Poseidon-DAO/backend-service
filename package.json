@@ -12,7 +12,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "mints-airdrop": "yarn build && node dist/scripts/mints-airdrop.js",
-    "holds-airdrop": "yarn build && node dist/scripts/holds-airdrop.js"
+    "holds-airdrop": "yarn build && node dist/scripts/holds-airdrop.js",
+    "guardians": "yarn build && node dist/scripts/guardians.js"
   },
   "dependencies": {
     "@prisma/client": "^4.13.0",
