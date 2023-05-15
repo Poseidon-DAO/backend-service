@@ -5,6 +5,10 @@ The project contains two scripts for aidrops:
 - For users that minted during the drop
 - For users that have been holding before the next drop
 
+and one script for mints
+
+- Fetching the Guardians and syncing the users on database
+
 ## Running Scripts
 
 ### Fetching all users that minted during the drop
@@ -42,3 +46,17 @@ e.g.
 ```
 
 `snapshotNumber` should be 2 or greater, 1 is automatically given to mints script
+
+### Fetching the Guardians
+
+Run
+
+```bash
+  yarn run guardians
+```
+
+or
+
+```bash
+  npm run guardians
+```

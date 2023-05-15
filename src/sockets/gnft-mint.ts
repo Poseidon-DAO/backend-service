@@ -31,7 +31,7 @@ export const onGNftMint = async (txnLog: Log) => {
       await prismaClient.user.create({
         data: {
           address: decodedInput.args.to,
-          gNfts: Number(decodedInput.args.value),
+          gNfts: BigInt(decodedInput.args.value).toString(),
           isGuardian: true,
         },
       });
@@ -42,7 +42,9 @@ export const onGNftMint = async (txnLog: Log) => {
     await prismaClient.user.update({
       where: { id: user.id },
       data: {
-        gNfts: user.gNfts + Number(decodedInput.args.value),
+        gNfts: (
+          BigInt(user.gNfts) + BigInt(decodedInput.args.value)
+        ).toString(),
         isGuardian: true,
       },
     });

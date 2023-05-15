@@ -15,7 +15,7 @@ export async function createCollections(collections: AlchemyNFTCollection[]) {
 export async function deleteCollections() {
   console.log("DELETING COLLECTIONS ON DATABASE START...");
 
-  await prismaClient.collection.deleteMany({});
+  await prismaClient.collection.deleteMany();
 
   console.log("DELETING COLLECTIONS ON DATABASE END...");
 }

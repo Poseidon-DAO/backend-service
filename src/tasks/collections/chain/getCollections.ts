@@ -1,13 +1,13 @@
 import fetch from "cross-fetch";
 
-import { NFT_BASE_URL } from "@constants/alchemy-url";
+import { getNftBaseUrl } from "@constants/alchemy-url";
 import { AlchemyNFTCollection } from "../types";
 
 export async function getCollections() {
   console.log("READING COLLECTIONS CHAIN START...");
 
   const collectionsResponse = await fetch(
-    NFT_BASE_URL +
+    getNftBaseUrl("0x1") +
       `/getNFTs?owner=${process.env.SC_PDN_ON_SUPERRARE}&contractAddresses%5B%5D=${process.env.SC_SUPERRARE}&withMetadata=true`
   );
   const collectionsJson = await collectionsResponse.json();
