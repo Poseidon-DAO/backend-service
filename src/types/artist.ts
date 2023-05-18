@@ -54,6 +54,7 @@ const MetaborgUserSchema = z.object({
     .trim()
     .email({ message: "The email field has a wrong email." }),
   address: z.string(),
+  city: z.string(),
   country: z.string(),
   state: z.string(),
   zip: z.string(),

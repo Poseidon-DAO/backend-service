@@ -64,6 +64,10 @@ const formatMetaborgBurnSubmit = (artist: MetaborgUserProps): string => {
       <h3>${artist.name} - ${artist.email}</h3></br>
       <h2>Address</h2>
       <p>${artist.address}</p></br></br>
+      <h2>City</h2>
+      <p>${artist.city}</p></br></br>
+      <h2>Country</h2>
+      <p>${artist.country}</p></br></br>
       <h2>Token id</h2>
       <a>${artist.tokenId}</a>
     </body>
