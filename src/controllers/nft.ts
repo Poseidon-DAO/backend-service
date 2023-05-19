@@ -25,11 +25,6 @@ export const getWeeklyMinted = async (_: Request, res: Response) => {
 
     const { groupedLogs, sum } = groupWeeklyMintedNFTLogs(mints, Number(ratio));
 
-    if (!mints.length) {
-      res.statusCode = 404;
-      throw new Error("No data available!");
-    }
-
     return res.json({
       totalSumMint: sum,
       weeklyMints: groupedLogs,
@@ -53,11 +48,6 @@ export const totalNfts = async (_: Request, res: Response) => {
     const countGNfts = nfts.reduce((acc, item) => {
       return (acc += Number(item.data) / ratio);
     }, 0);
-
-    if (!nfts.length) {
-      res.statusCode = 404;
-      throw new Error("No data available!");
-    }
 
     return res.json({
       totalNfts: countGNfts,
