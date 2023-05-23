@@ -112,6 +112,8 @@ model Collection {
   tags            String[]
   timeLastUpdated DateTime @db.Timestamptz(3)
   votes Vote[]
+
+  @@unique([platformAddress, tokenId])
 }
 
 

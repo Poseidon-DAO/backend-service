@@ -5,8 +5,6 @@ async function collectionsFetcher() {
   console.log("READING COLLECTIONS START...");
 
   try {
-    await deleteCollections();
-
     const collections = await getCollections();
 
     await createCollections(collections);
