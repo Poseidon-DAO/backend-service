@@ -10,6 +10,7 @@ import * as metaborgController from "@controllers/metaborg";
 import * as nftController from "@controllers/nft";
 import * as tokenController from "@controllers/token";
 import * as userController from "@controllers/user";
+import * as userSettingsController from "@controllers/userSettings";
 
 import { mintEventconfig, onGNftMint, settings } from "@sockets/index";
 import { startScheduledTasks } from "@tasks/index";
@@ -45,5 +46,8 @@ app.get("/token/vestsByDate", tokenController.getVests);
 app.get("/token/airdropUsers", tokenController.getAiradropUsers);
 
 app.post("/user/register", userController.register);
+
+app.get("/user/settings", userSettingsController.settings);
+app.post("/user/settings", userSettingsController.updateSettings);
 
 export default app;

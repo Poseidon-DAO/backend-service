@@ -21,11 +21,15 @@ export const register = async (
     if (!!user) {
       return res.status(409).json({
         error: `User with address: <${address}> already exists!`,
+        user,
       });
     }
 
     const newUser = await prismaClient.user.create({
-      data: { address },
+      data: {
+        address,
+        settings: { create: {} },
+      },
     });
 
     return res.json(newUser);
