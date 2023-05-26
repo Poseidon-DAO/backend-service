@@ -8,6 +8,7 @@ import * as artistController from "@controllers/artist";
 import * as collectionController from "@controllers/collection";
 import * as metaborgController from "@controllers/metaborg";
 import * as nftController from "@controllers/nft";
+import * as searchController from "@controllers/search";
 import * as tokenController from "@controllers/token";
 import * as userController from "@controllers/user";
 import * as userSettingsController from "@controllers/userSettings";
@@ -42,6 +43,8 @@ app.patch("/collection/vote", collectionController.revoteCollection);
 
 app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
 app.get("/nft/total", nftController.totalNfts);
+
+app.get("/search", searchController.search);
 
 app.get("/token/weeklyMoved", tokenController.getWeeklyTransfers);
 app.get("/token/weeklyBurned", tokenController.getWeeklyBurned);
