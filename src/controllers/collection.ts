@@ -34,28 +34,31 @@ export const getCollection = async (
     if (!userId) {
       return res.status(404).json({ message: "User id not provided!" });
     }
-    const totalCount = await prismaClient.collection.count();
+
     const userSettings = await prismaClient.userSettings.findUnique({
       where: { userId },
     });
 
     const showVoted = !!userSettings?.showVotedCollection;
 
-    console.log({ userId, showVoted });
-
     if (sort === "most-voted") {
+      const whereCondition = {
+        title: { contains: query, mode: "insensitive" },
+        platform: platform ? { equals: platform, mode: "insensitive" } : {},
+        votes: showVoted
+          ? {}
+          : {
+              none: { userId: { equals: userId, mode: "insensitive" } },
+            },
+      };
+
+      const totalCount = await prismaClient.collection.count({
+        where: whereCondition as any,
+      });
       const mostVotedCollection = await prismaClient.collection.findMany({
         take: pageSize,
         skip: (page - 1) * pageSize,
-        where: {
-          title: { contains: query, mode: "insensitive" },
-          platform: platform ? { equals: platform, mode: "insensitive" } : {},
-          votes: showVoted
-            ? {}
-            : {
-                none: { userId: { equals: userId, mode: "insensitive" } },
-              },
-        },
+        where: whereCondition as any,
         include: { votes: true },
         orderBy: { votes: { _count: "desc" } },
       });
@@ -69,6 +72,39 @@ export const getCollection = async (
     }
 
     if (sort === "most-loved" || sort === "most-hated") {
+      const totalFoundCollection: Collection[] = await prismaClient.$queryRaw`
+        SELECT
+            "Collection".*,
+            COALESCE(JSON_AGG("Vote".*) FILTER (WHERE "Vote"."vote" IS NOT NULL), '[]') AS "votes"
+          FROM
+            "Collection"
+            LEFT JOIN "Vote" ON "Collection"."id" = "Vote"."collectionId"
+            LEFT JOIN "User" ON "Vote"."userId" = "User"."id" 
+          WHERE LOWER("Collection"."platform") = LOWER(COALESCE(${platform}, "Collection"."platform"))
+            AND  ("Collection"."title" ILIKE ${"%" + query + "%"} )  
+            AND (
+                ${showVoted} = TRUE OR 
+                NOT EXISTS (
+                    SELECT 1 FROM "Vote" 
+                    WHERE "Vote"."collectionId" = "Collection"."id" AND "Vote"."userId" = ${userId}
+                )
+            )        
+          GROUP BY
+            "Collection".id
+          ORDER BY
+            CASE
+              WHEN COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+                sort === "most-loved" ? "DOWNVOTE" : "UPVOTE"
+              }) > COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+        sort === "most-loved" ? "UPVOTE" : "DOWNVOTE"
+      })
+              THEN 1
+              ELSE 0
+            END ASC,
+          COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+            sort === "most-loved" ? "UPVOTE" : "DOWNVOTE"
+          }) DESC
+        `;
       const mostLovedHatedCollection: Collection[] =
         await prismaClient.$queryRaw`
           SELECT
@@ -99,32 +135,37 @@ export const getCollection = async (
               THEN 1
               ELSE 0
             END ASC,
-            COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
-              sort === "most-loved" ? "UPVOTE" : "DOWNVOTE"
-            }) DESC
+          COUNT("Vote"."vote") FILTER (WHERE "Vote"."vote" = ${
+            sort === "most-loved" ? "UPVOTE" : "DOWNVOTE"
+          }) DESC
           LIMIT ${pageSize} OFFSET ${page} * ${pageSize} - ${pageSize}
       `;
 
       return res.json({
-        totalCount,
+        totalCount: totalFoundCollection.length,
         pageCount: mostLovedHatedCollection.length,
         pageSize,
         collection: mostLovedHatedCollection,
       });
     }
 
+    const whereCondition = {
+      platform: platform ? { equals: platform, mode: "insensitive" } : {},
+      title: query ? { contains: query, mode: "insensitive" } : {},
+      votes: showVoted
+        ? {}
+        : {
+            none: { userId: { equals: userId, mode: "insensitive" } },
+          },
+    };
+
+    const totalCount = await prismaClient.collection.count({
+      where: whereCondition as any,
+    });
     const defaultCollection = await prismaClient.collection.findMany({
       take: pageSize,
       skip: (page - 1) * pageSize,
-      where: {
-        platform: platform ? { equals: platform, mode: "insensitive" } : {},
-        title: query ? { contains: query, mode: "insensitive" } : {},
-        votes: showVoted
-          ? {}
-          : {
-              none: { userId: { equals: userId, mode: "insensitive" } },
-            },
-      },
+      where: whereCondition as any,
       include: { votes: true },
     });
 
@@ -134,6 +175,25 @@ export const getCollection = async (
       pageSize,
       collection: defaultCollection,
     });
+  } catch (err) {
+    res.send((err as Error).message);
+  }
+};
+
+/**
+ * @route GET /
+ */
+export const getCollectionVotes = async (
+  req: Request<{ collectionId: string }>,
+  res: Response
+) => {
+  const { collectionId } = req.params;
+  try {
+    const collectionVotes = await prismaClient.vote.count({
+      where: { collectionId },
+    });
+
+    return res.json({ count: collectionVotes });
   } catch (err) {
     res.send((err as Error).message);
   }

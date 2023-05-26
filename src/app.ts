@@ -33,6 +33,10 @@ app.post("/artists", artistController.postArtist);
 app.post("/artists/metaborg", metaborgController.submitMetaborgBurn);
 
 app.get("/collection", collectionController.getCollection);
+app.get(
+  "/collection/:collectionId/votes",
+  collectionController.getCollectionVotes
+);
 app.post("/collection/vote", collectionController.voteCollection);
 app.patch("/collection/vote", collectionController.revoteCollection);
 
