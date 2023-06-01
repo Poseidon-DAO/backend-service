@@ -26,6 +26,7 @@ export const search = async (
         image: true,
         title: true,
       },
+      take: 6,
     });
 
     return res.json({ count: searchResults.length, results: searchResults });

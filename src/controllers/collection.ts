@@ -183,6 +183,26 @@ export const getCollection = async (
 /**
  * @route GET /
  */
+export const getCollectionItem = async (
+  req: Request<{ collectionId: string }>,
+  res: Response
+) => {
+  const { collectionId } = req.params;
+  try {
+    const collection = await prismaClient.collection.findUnique({
+      where: { id: collectionId },
+      include: { votes: true },
+    });
+
+    return res.json(collection);
+  } catch (err) {
+    res.send((err as Error).message);
+  }
+};
+
+/**
+ * @route GET /
+ */
 export const getCollectionVotes = async (
   req: Request<{ collectionId: string }>,
   res: Response

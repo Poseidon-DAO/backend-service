@@ -19,8 +19,8 @@ export const register = async (
     });
 
     if (!!user) {
-      return res.status(409).json({
-        error: `User with address: <${address}> already exists!`,
+      return res.status(200).json({
+        message: "Signed in.",
         user,
       });
     }
@@ -32,7 +32,7 @@ export const register = async (
       },
     });
 
-    return res.json(newUser);
+    return res.json({ message: "Signed up.", user: newUser });
   } catch (error) {
     console.error(error);
 
