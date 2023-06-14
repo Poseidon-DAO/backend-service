@@ -8,6 +8,7 @@ type Sort = "most-voted" | "most-loved" | "most-hated";
 
 type CollectionQueryParams = {
   page?: number;
+  pageSize?: string;
   platform?: Platform;
   query?: string;
   sort?: Sort;
@@ -28,8 +29,7 @@ export const getCollection = async (
     sort = null,
     userId = "",
   } = req.query;
-  const pageSize = 30;
-
+  const pageSize = Number(req.query.pageSize) || 30;
   try {
     if (!userId) {
       return res.status(404).json({ message: "User id not provided!" });
@@ -337,6 +337,63 @@ export const revoteCollection = async (
     });
 
     return res.json(updatedVote);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({ error: "An unexpected error occurred" });
+  }
+};
+
+/**
+ * @route DELETE /
+ */
+export const deleteVoteCollection = async (
+  req: Request<
+    {},
+    {},
+    Pick<VoteCollectionBody, "collectionId" | "userAddress">
+  >,
+  res: Response
+) => {
+  const { collectionId, userAddress } = req.body;
+
+  try {
+    const user = await prismaClient.user.findFirst({
+      where: { address: { equals: userAddress, mode: "insensitive" } },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        error: `User with address: <${userAddress}> does not exist!`,
+      });
+    }
+
+    if (!user.isGuardian) {
+      return res.status(401).json({
+        error: `User with address: <${userAddress}> is not a Guardian, thus is not allowed to vote!`,
+      });
+    }
+
+    const collection = await prismaClient.collection.findUnique({
+      where: { id: collectionId },
+    });
+
+    if (!collection) {
+      return res.status(404).json({
+        error: `Collection with id: <${collectionId}> does not exist!`,
+      });
+    }
+
+    const deletedVote = await prismaClient.vote.delete({
+      where: {
+        userId_collectionId: {
+          collectionId,
+          userId: user.id,
+        },
+      },
+    });
+
+    return res.json(deletedVote);
   } catch (error) {
     console.error(error);
 

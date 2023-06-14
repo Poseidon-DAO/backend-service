@@ -41,6 +41,7 @@ app.get(
 );
 app.post("/collection/vote", collectionController.voteCollection);
 app.patch("/collection/vote", collectionController.revoteCollection);
+app.delete("/collection/vote", collectionController.deleteVoteCollection);
 
 app.get("/nft/weeklyMinted", nftController.getWeeklyMinted);
 app.get("/nft/total", nftController.totalNfts);
