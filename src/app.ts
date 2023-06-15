@@ -12,6 +12,7 @@ import * as searchController from "@controllers/search";
 import * as tokenController from "@controllers/token";
 import * as userController from "@controllers/user";
 import * as userSettingsController from "@controllers/userSettings";
+import * as voteController from "@controllers/vote";
 
 import { mintEventconfig, onGNftMint, settings } from "@sockets/index";
 import { startScheduledTasks } from "@tasks/index";
@@ -58,5 +59,7 @@ app.post("/user/register", userController.register);
 
 app.get("/user/settings", userSettingsController.settings);
 app.post("/user/settings", userSettingsController.updateSettings);
+
+app.get("/vote/stats", voteController.getVoteStats);
 
 export default app;
