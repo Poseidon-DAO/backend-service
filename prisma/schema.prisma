@@ -145,3 +145,16 @@ model Vote {
   @@id([userId, collectionId])
   @@index([userId, collectionId, createdAt, updatedAt, vote])
 }
+
+model CollectionSales {
+  id              String @id @default(cuid())
+  contractAddress String
+  tokenId         String
+
+  transactionHash String
+  transactionType String
+  timestamp       DateTime
+  platform        String
+
+  @@unique([contractAddress, tokenId])
+}

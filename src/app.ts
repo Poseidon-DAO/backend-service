@@ -1,4 +1,3 @@
-import { Alchemy } from "alchemy-sdk";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -14,17 +13,17 @@ import * as userController from "@controllers/user";
 import * as userSettingsController from "@controllers/userSettings";
 import * as voteController from "@controllers/vote";
 
-import { mintEventconfig, onGNftMint, settings } from "@sockets/index";
+import { mintEventconfig, onGNftMint } from "@sockets/index";
 import { startScheduledTasks } from "@tasks/index";
+import { alchemySDK } from "@sdk/index";
 
 dotenv.config();
 
-const alchemy = new Alchemy(settings);
 const app: Express = express();
 
 startScheduledTasks();
 
-alchemy.ws.on(mintEventconfig, onGNftMint);
+alchemySDK.ws.on(mintEventconfig, onGNftMint);
 
 app.use(bodyParser.json());
 app.use(cors());
