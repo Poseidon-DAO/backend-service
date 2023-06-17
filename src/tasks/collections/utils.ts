@@ -15,7 +15,7 @@ export const formatCollection = (collection: AlchemyNFTCollection) => {
     createdBy: collection.metadata.createdBy,
     yearCreated: collection.metadata.yearCreated,
     mimeType: collection.metadata.media.mimeType,
-    mimeUri: collection.metadata.media.mimeType,
+    mimeUri: collection.metadata.media.uri,
     tags: collection.metadata.tags,
     timeLastUpdated: collection.timeLastUpdated,
   };

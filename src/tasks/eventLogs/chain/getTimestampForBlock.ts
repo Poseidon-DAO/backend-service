@@ -3,7 +3,10 @@ import fetch from "cross-fetch";
 
 import { getBaseUrl } from "@constants/alchemy-url";
 
-export async function getTimeStampForBlock(log: EventLog) {
+export async function getTimeStampForBlock(
+  log: EventLog,
+  retries: number = 5
+): Promise<EventLog> {
   console.log(
     `READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN START...`
   );
@@ -25,6 +28,17 @@ export async function getTimeStampForBlock(log: EventLog) {
   const blockInfoOnChain = blockInfoJsonResponse?.result;
 
   console.log(`READING BLOCK ${log.blockNumber} INFORMATION FROM CHAIN END...`);
+
+  if (!blockInfoOnChain?.timestamp && retries > 0) {
+    console.log("TIMESTAMP NOT FOUND. RETRYING...");
+    return getTimeStampForBlock(log, retries - 1);
+  }
+
+  if (retries === 0 && !blockInfoOnChain?.timestamp) {
+    throw new Error(
+      `FAILED TO FETCH TIMESTAMP FOR BLOCK ${log.blockNumber} AFTER ${retries} RETRIES.`
+    );
+  }
 
   return {
     ...log,

@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["filteredRelationCount"]
 }
 
@@ -90,7 +90,21 @@ model User {
   isGuardian Boolean  @default(false)
   gNfts      String   @default("")
 
-  votes Vote[]
+  votes    Vote[]
+  settings UserSettings?
+}
+
+model UserSettings {
+  id     Int    @id @default(autoincrement())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  theme               String  @default("light")
+  collectionLayout    String  @default("grid")
+  showVotedCollection Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Collection {
@@ -111,10 +125,10 @@ model Collection {
   mimeUri         String
   tags            String[]
   timeLastUpdated DateTime @db.Timestamptz(3)
-  votes Vote[]
+  votes           Vote[]
+
+  @@unique([platformAddress, tokenId])
 }
-
-
 
 model Vote {
   vote String
@@ -130,4 +144,17 @@ model Vote {
 
   @@id([userId, collectionId])
   @@index([userId, collectionId, createdAt, updatedAt, vote])
+}
+
+model CollectionSales {
+  id              String @id @default(cuid())
+  contractAddress String
+  tokenId         String
+
+  transactionHash String
+  transactionType String
+  timestamp       DateTime
+  platform        String
+
+  @@unique([contractAddress, tokenId])
 }

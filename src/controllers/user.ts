@@ -19,16 +19,20 @@ export const register = async (
     });
 
     if (!!user) {
-      return res.status(409).json({
-        error: `User with address: <${address}> already exists!`,
+      return res.status(200).json({
+        message: "Signed in.",
+        user,
       });
     }
 
     const newUser = await prismaClient.user.create({
-      data: { address },
+      data: {
+        address,
+        settings: { create: {} },
+      },
     });
 
-    return res.json(newUser);
+    return res.json({ message: "Signed up.", user: newUser });
   } catch (error) {
     console.error(error);
 
